@@ -1,0 +1,4 @@
+
+# This directory is used to store sound files for the Pokémon app.
+# Since we're using mocked API for demo purposes, we'll use audio file paths 
+# but actually the sounds won't be played in this demo.

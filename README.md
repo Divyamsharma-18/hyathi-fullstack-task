@@ -1,65 +1,73 @@
-# Hyathi Technologies Full Stack Development Task - Virtual Pokemon Adoption App
+# Welcome to your Lovable project
 
-## Objective
+## Project info
 
-Your task is to create an application that simulates a virtual Pokemon adoption scenario. The app should allow users to:
+**URL**: https://lovable.dev/projects/148fd309-d16f-41c5-90ba-ac66a80c7025
 
-- Register and log in.
-- View available Pokemon for adoption (each Pokemon has different attributes like breed, age, health status, etc.).
-- Adopt a Pokemon (Each user can adopt multiple Pokemon, but each Pokemon can be adopted only once).
-- Once a Pokemon is adopted, the user can feed the Pokemon (each feeding increases Pokemon's health status).
-- If a Pokemon isn't fed for a certain time (ex: 24 hours), its health status decreases.
+## How can I edit this code?
 
-Please note, the main goal of this task is to understand your mindset, approach, technical understanding, problem-solving skills, and logical reasoning capabilities rather than just delivering a complete project. Feel free to document your process and decisions in the code comments or in your commit messages.
+There are several ways of editing your application.
 
-## Tech Stack
+**Use Lovable**
 
-- Backend: Node.js, Express, and MongoDB
-- Frontend: React
-- We prefer Typescript but Javascript can be used as well.
+Simply visit the [Lovable Project](https://lovable.dev/projects/148fd309-d16f-41c5-90ba-ac66a80c7025) and start prompting.
 
-## Instructions
+Changes made via Lovable will be committed automatically to this repo.
 
-1. Please fork the provided repository and clone it to your local machine. You'll complete your work on your own forked repository.
+**Use your preferred IDE**
 
-2. We encourage you to make regular, meaningful commits to your repository. This isn't about making one large commit at the end of the project. Instead, we want to see a progression of commits that reflect your development process.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-While we've provided a 5-day breakdown, feel free to complete the project early or follow your own process if you're more comfortable with that.
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-## 5-Day Project Breakdown
+Follow these steps:
 
-### Day 1
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
-- Identify and resolve the bugs in the provided skeleton code to get the application running.
-- Develop the User Registration functionality:
-   - Backend: Create the appropriate endpoint and database schema for user registration.
-   - Frontend: Use React to create the registration form and handle the form submission.
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
 
-### Day 2
+# Step 3: Install the necessary dependencies.
+npm i
 
-- Develop the User Login functionality:
-   - Backend: Create the appropriate endpoint for user authentication.
-   - Frontend: Create the login form and handle the form submission.
-- Set up the basic framework for displaying Pokemon:
-   - Backend: Set up the endpoints and database schema for handling Pokemon data.
-   - Frontend: Create a basic view for displaying all the Pokemon.
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
+```
 
-### Day 3
+**Edit a file directly in GitHub**
 
-- Refine the Pokemon display view and add Pokemon adoption feature:
-   - Backend: Create the appropriate endpoint and schema modifications to handle Pokemon adoption.
-   - Frontend: Add a button or link to each Pokemon to allow users to adopt them.
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-### Day 4
+**Use GitHub Codespaces**
 
-- Implement the functionality for a user to feed their Pokemon and to update the health status:
-   - Backend: Create the appropriate endpoint.
-   - Frontend: Add a feed button to each Pokemon that the user has adopted.
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-### Day 5
+## What technologies are used for this project?
 
-- Implement a job (using something like node-cron) that decreases the health status of each Pokemon that hasn't been fed in the last 24 hours.
-- Document all the endpoints using Postman and provide a collection of requests.
-- After the task is completed please add iamuddeshya in your repo as a collaborator and email ua@hyathi.com to acknowledge you completed the task attaching the repo link in the email.
+This project is built with:
 
-Good luck!
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+
+## How can I deploy this project?
+
+Simply open [Lovable](https://lovable.dev/projects/148fd309-d16f-41c5-90ba-ac66a80c7025) and click on Share -> Publish.
+
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
