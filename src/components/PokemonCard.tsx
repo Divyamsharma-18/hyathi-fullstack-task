@@ -2,6 +2,8 @@
 import React from 'react';
 import { Coins, Heart, Star } from 'lucide-react';
 import { Pokemon } from '@/types/types';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/AuthContext';
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -20,6 +22,9 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
   userCoins = 0,
   actionLoading = false
 }) => {
+  const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
+  
   // Function to determine time since last fed
   const getTimeSinceLastFed = () => {
     if (!pokemon.lastFed) return 'Never fed';
@@ -58,23 +63,56 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
 
   // Get card class based on rarity
   const getCardClass = () => {
-    let baseClass = 'pixel-card';
-    if (isLegendary) return `${baseClass} legendary-pokemon`;
-    if (isRare) return `${baseClass} rare-pokemon`;
+    let baseClass = 'pixel-card hover:shadow-lg transition-shadow duration-300';
+    if (isLegendary) return `${baseClass} legendary-pokemon hover:shadow-pokemon-gold/50`;
+    if (isRare) return `${baseClass} rare-pokemon hover:shadow-pokemon-gold/30`;
     return baseClass;
   };
 
   // Function to play pokemon cry
   const playPokemonCry = () => {
-    // Get pokemon ID from image URL
-    const urlParts = imageUrl.split('/');
-    const fileName = urlParts[urlParts.length - 1];
-    const pokemonId = fileName.split('.')[0];
+    try {
+      // Create audio element
+      const audio = new Audio(`https://play.pokemonshowdown.com/audio/cries/${pokemon.name.toLowerCase()}.mp3`);
+      audio.volume = 0.3;
+      audio.play().catch(err => console.log('Error playing sound:', err));
+    } catch (error) {
+      console.error('Error playing Pokémon sound:', error);
+    }
+  };
+
+  // Handle adoption click when not authenticated
+  const handleAdoptClick = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please login or register to be a Pokémon trainer',
+        variant: 'destructive',
+      });
+      return;
+    }
     
-    // Create audio element
-    const audio = new Audio(`https://play.pokemonshowdown.com/audio/cries/${pokemon.name.toLowerCase()}.mp3`);
-    audio.volume = 0.3;
-    audio.play().catch(err => console.log('Error playing sound:', err));
+    if (onAdopt && !pokemon.isAdopted && userCoins >= adoptionCost && !actionLoading) {
+      onAdopt(pokemon._id);
+      playPokemonCry();
+    }
+  };
+
+  // Handle feed click
+  const handleFeedClick = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please login to feed your Pokémon',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    if (onFeed && pokemon.health < 100 && !actionLoading) {
+      onFeed(pokemon._id);
+      playPokemonCry();
+    }
   };
 
   return (
@@ -143,12 +181,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
         
         {!isAdopted ? (
           <button 
-            onClick={() => {
-              if (onAdopt && !pokemon.isAdopted && userCoins >= adoptionCost && !actionLoading) {
-                onAdopt(pokemon._id);
-                playPokemonCry();
-              }
-            }}
+            onClick={handleAdoptClick}
             disabled={userCoins < adoptionCost || actionLoading || pokemon.isAdopted}
             className={`w-full py-1 pokemon-font text-center text-xs ${
               userCoins < adoptionCost || pokemon.isAdopted ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-500'
@@ -158,12 +191,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
           </button>
         ) : (
           <button 
-            onClick={() => {
-              if (onFeed && pokemon.health < 100 && !actionLoading) {
-                onFeed(pokemon._id);
-                playPokemonCry();
-              }
-            }}
+            onClick={handleFeedClick}
             disabled={pokemon.health >= 100 || actionLoading}
             className={`w-full py-1 pokemon-font text-center text-xs ${
               pokemon.health >= 100 ? 'bg-gray-600' : 'bg-green-600 hover:bg-green-500'
