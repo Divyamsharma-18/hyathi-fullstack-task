@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { pokemonService, mockApiService } from '@/services/api';
@@ -7,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import PokemonCard from '@/components/PokemonCard';
 import StatsCard from '@/components/StatsCard';
 import TubaFairy from '@/components/TubaFairy';
+import FairyTuba from '@/components/FairyTuba';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const AdoptionCenter: React.FC = () => {
@@ -143,7 +143,14 @@ const AdoptionCenter: React.FC = () => {
           </p>
         </div>
         <div className="md:col-span-1">
-          <StatsCard />
+          <div className="flex items-center justify-between">
+            <StatsCard />
+            {isAuthenticated && (
+              <div className="ml-4">
+                <FairyTuba />
+              </div>
+            )}
+          </div>
         </div>
       </div>
       
@@ -155,12 +162,6 @@ const AdoptionCenter: React.FC = () => {
               My Pokémon {adoptedPokemons.length > 0 && `(${adoptedPokemons.length})`}
             </TabsTrigger>
           </TabsList>
-          
-          {isAuthenticated && (
-            <div className="hidden md:block">
-              <TubaFairy />
-            </div>
-          )}
         </div>
         
         <TabsContent value="available">
@@ -209,12 +210,6 @@ const AdoptionCenter: React.FC = () => {
           )}
         </TabsContent>
       </Tabs>
-      
-      {isAuthenticated && (
-        <div className="md:hidden mt-8">
-          <TubaFairy />
-        </div>
-      )}
     </div>
   );
 };

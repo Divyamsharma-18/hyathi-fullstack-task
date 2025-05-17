@@ -1,23 +1,17 @@
-
 import axios from 'axios';
+import { User, Pokemon, LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/types';
 
-// Define base URL
-const API_BASE_URL = 'https://virtual-pokemon-adoption-api.onrender.com/api';
-
-// Create axios instance
+// Create an axios instance
 const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: 'https://api.example.com/v1', // Replace with your actual API URL
 });
 
-// Intercept requests to add auth token
+// Set JWT token for auth requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('pokemon_token');
+    const token = localStorage.getItem('token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -26,329 +20,332 @@ api.interceptors.request.use(
   }
 );
 
-// Auth services
-export const authService = {
-  register: async (userData: { username: string; email: string; password: string }) => {
-    const response = await api.post('/auth/register', userData);
-    if (response.data.token) {
-      localStorage.setItem('pokemon_token', response.data.token);
-      localStorage.setItem('pokemon_user', JSON.stringify(response.data.user));
-    }
-    return response.data;
-  },
-  
-  login: async (credentials: { email: string; password: string }) => {
-    const response = await api.post('/auth/login', credentials);
-    if (response.data.token) {
-      localStorage.setItem('pokemon_token', response.data.token);
-      localStorage.setItem('pokemon_user', JSON.stringify(response.data.user));
-    }
-    return response.data;
-  },
-  
-  logout: () => {
-    localStorage.removeItem('pokemon_token');
-    localStorage.removeItem('pokemon_user');
-    window.location.href = '/';
-  },
-  
-  getCurrentUser: () => {
-    const user = localStorage.getItem('pokemon_user');
-    return user ? JSON.parse(user) : null;
-  },
-  
-  updateUserCoins: async (coins: number) => {
-    const response = await api.patch('/users/coins', { coins });
-    // Update local storage with new user data
-    localStorage.setItem('pokemon_user', JSON.stringify(response.data));
-    return response.data;
-  }
-};
-
-// Pokemon services
+// Real API service for production use
 export const pokemonService = {
-  getAllPokemons: async () => {
+  getAllPokemons: async (): Promise<Pokemon[]> => {
     const response = await api.get('/pokemons');
     return response.data;
   },
-  
-  adoptPokemon: async (pokemonId: string) => {
-    const response = await api.post(`/pokemons/${pokemonId}/adopt`);
-    // Update local storage with new user data if returned
-    if (response.data.user) {
-      localStorage.setItem('pokemon_user', JSON.stringify(response.data.user));
-    }
+
+  getUserPokemons: async (): Promise<Pokemon[]> => {
+    const response = await api.get('/pokemons/user');
     return response.data;
   },
-  
-  feedPokemon: async (pokemonId: string) => {
+
+  adoptPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; user: User }> => {
+    const response = await api.post(`/pokemons/${pokemonId}/adopt`);
+    return response.data;
+  },
+
+  feedPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; message: string }> => {
     const response = await api.post(`/pokemons/${pokemonId}/feed`);
     return response.data;
   },
-  
-  getUserPokemons: async () => {
-    const response = await api.get('/users/pokemons');
-    return response.data;
-  },
-  
-  collectTubaReward: async () => {
-    const response = await api.post('/users/tuba-reward');
-    // Update local storage with new user data
-    localStorage.setItem('pokemon_user', JSON.stringify(response.data));
-    return response.data;
-  },
-  
-  getDailyLoginReward: async () => {
-    const response = await api.post('/users/daily-reward');
-    // Update local storage with new user data
-    localStorage.setItem('pokemon_user', JSON.stringify(response.data));
+
+  collectFairyReward: async (): Promise<{ user: User; message: string }> => {
+    const response = await api.post('/rewards/fairy');
     return response.data;
   }
 };
 
-// Mock API service for local development
-const mockData = {
-  pokemons: [
-    {
-      _id: '1',
-      name: 'Pikachu',
-      type: 'Electric',
-      description: 'A cute electric mouse Pokémon',
-      imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
-      health: 90,
-      adoptionCost: 50,
-      lastFed: new Date(),
-      isAdopted: false,
-      isRare: false
-    },
-    {
-      _id: '2',
-      name: 'Charmander',
-      type: 'Fire',
-      description: 'A fire lizard Pokémon with a flame on its tail',
-      imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
-      health: 85,
-      adoptionCost: 60,
-      lastFed: new Date(),
-      isAdopted: false,
-      isRare: false
-    },
-    {
-      _id: '3',
-      name: 'Bulbasaur',
-      type: 'Grass/Poison',
-      description: 'A plant seed Pokémon with a bulb on its back',
-      imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-      health: 95,
-      adoptionCost: 55,
-      lastFed: new Date(),
-      isAdopted: false,
-      isRare: false
-    },
-    {
-      _id: '4',
-      name: 'Squirtle',
-      type: 'Water',
-      description: 'A small turtle Pokémon that shoots water',
-      imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
-      health: 88,
-      adoptionCost: 58,
-      lastFed: new Date(),
-      isAdopted: false,
-      isRare: false
-    },
-    {
-      _id: '5',
-      name: 'Mew',
-      type: 'Psychic',
-      description: 'A mythical Pokémon with the DNA of all Pokémon',
-      imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png',
-      health: 100,
-      adoptionCost: 150,
-      lastFed: new Date(),
-      isAdopted: false,
-      isRare: true
-    },
-    {
-      _id: '6',
-      name: 'Mewtwo',
-      type: 'Psychic',
-      description: 'A genetically engineered Pokémon cloned from Mew',
-      imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png',
-      health: 98,
-      adoptionCost: 200,
-      lastFed: new Date(),
-      isAdopted: false,
-      isRare: true
-    }
-  ],
-  user: {
-    _id: 'user1',
-    username: 'trainer1',
-    email: 'trainer@example.com',
-    coins: 100,
-    adoptedPokemons: [],
-    lastLogin: new Date(),
-    lastTubaReward: new Date(Date.now() - 12 * 60 * 60 * 1000) // 12 hours ago
-  }
-};
-
-// Mock API functions for local development
+// Mock API service for demo/dev purposes
 export const mockApiService = {
-  login: async (credentials: { email: string; password: string }) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const user = mockData.user;
-    const token = 'mock_token_123';
-    
-    localStorage.setItem('pokemon_token', token);
-    localStorage.setItem('pokemon_user', JSON.stringify(user));
-    
-    return { user, token };
+  getAllPokemons: async (): Promise<Pokemon[]> => {
+    // Return mock data for demo purposes
+    return [
+      {
+        _id: '1',
+        name: 'Pikachu',
+        type: ['Electric'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
+        description: 'When it is angered, it immediately discharges the energy stored in the pouches in its cheeks.',
+        health: 100,
+        rarity: 'rare',
+        price: 50,
+        isAdopted: false
+      },
+      {
+        _id: '2',
+        name: 'Bulbasaur',
+        type: ['Grass', 'Poison'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
+        description: 'Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun’s rays, the seed grows progressively larger.',
+        health: 120,
+        rarity: 'common',
+        price: 30,
+        isAdopted: false
+      },
+      {
+        _id: '3',
+        name: 'Charmander',
+        type: ['Fire'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
+        description: 'The flame that burns at the tip of its tail is an indication of its emotions. The flame wavers when Charmander is enjoying itself. If the Pokémon becomes enraged, the flame burns fiercely.',
+        health: 80,
+        rarity: 'common',
+        price: 30,
+        isAdopted: false
+      },
+      {
+        _id: '4',
+        name: 'Squirtle',
+        type: ['Water'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
+        description: 'Squirtle’s shell is not merely used for protection. The shell’s rounded shape and the grooves on its surface minimize resistance in water, enabling this Pokémon to swim at high speeds.',
+        health: 90,
+        rarity: 'common',
+        price: 30,
+        isAdopted: false
+      },
+      {
+        _id: '5',
+        name: 'Eevee',
+        type: ['Normal'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png',
+        description: 'Eevee has an unstable genetic code that allows it to evolve into multiple forms. It is popular as a pet due to its friendly nature.',
+        health: 110,
+        rarity: 'rare',
+        price: 50,
+        isAdopted: false
+      },
+      {
+        _id: '6',
+        name: 'Snorlax',
+        type: ['Normal'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
+        description: 'Snorlax is a very lazy Pokémon. Unless it is eating, it is constantly asleep. It is not picky about what it eats—even moldy food will do.',
+        health: 200,
+        rarity: 'rare',
+        price: 70,
+        isAdopted: false
+      },
+      {
+        _id: '7',
+        name: 'Gengar',
+        type: ['Ghost', 'Poison'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png',
+        description: 'Sometimes, on a dark night, your shadow thrown by a streetlight will suddenly overtake you and race off into the darkness. It is actually a Gengar running by pretending to be your shadow.',
+        health: 95,
+        rarity: 'rare',
+        price: 60,
+        isAdopted: false
+      },
+      {
+        _id: '8',
+        name: 'Mewtwo',
+        type: ['Psychic'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png',
+        description: 'Mewtwo is a Pokémon that was created by genetic manipulation. However, even though the scientific power of humans created this Pokémon’s body, they failed to endow Mewtwo with a compassionate heart.',
+        health: 150,
+        rarity: 'legendary',
+        price: 100,
+        isAdopted: false
+      },
+      {
+        _id: '9',
+        name: 'Articuno',
+        type: ['Ice', 'Flying'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/144.png',
+        description: 'Articuno is a large, avian Pokémon with predominantly blue plumage. It has a head crest of long, blue feathers and a gray, mask-like marking around its eyes.',
+        health: 130,
+        rarity: 'legendary',
+        price: 90,
+        isAdopted: false
+      },
+      {
+        _id: '10',
+        name: 'Zapdos',
+        type: ['Electric', 'Flying'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/145.png',
+        description: 'Zapdos is an avian Pokémon with predominantly yellow plumage. Black tips appear on its wings and tail feathers. It has a long, thin, light orange beak and black eyes.',
+        health: 130,
+        rarity: 'legendary',
+        price: 90,
+        isAdopted: false
+      },
+      {
+        _id: '11',
+        name: 'Moltres',
+        type: ['Fire', 'Flying'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/146.png',
+        description: 'Moltres is a large, avian Pokémon with orange plumage. It has a long, flowing head crest and tail composed of flames. Its beak is long and thin, and its eyes are surrounded by a black marking.',
+        health: 130,
+        rarity: 'legendary',
+        price: 90,
+        isAdopted: false
+      }
+    ];
   },
-  
-  register: async (userData: { username: string; email: string; password: string }) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const user = {
-      ...mockData.user,
-      username: userData.username,
-      email: userData.email
-    };
-    const token = 'mock_token_123';
-    
-    localStorage.setItem('pokemon_token', token);
-    localStorage.setItem('pokemon_user', JSON.stringify(user));
-    
-    return { user, token };
+
+  getUserPokemons: async (): Promise<Pokemon[]> => {
+    // Return mock data for the current user's adopted Pokemon
+    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    return adoptedPokemons;
   },
-  
-  getAllPokemons: async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    return mockData.pokemons;
-  },
-  
-  adoptPokemon: async (pokemonId: string) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const user = JSON.parse(localStorage.getItem('pokemon_user') || '{}');
-    const pokemon = mockData.pokemons.find(p => p._id === pokemonId);
+
+  adoptPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; user: User }> => {
+    // Mock the adoption process
+    const allPokemons = await mockApiService.getAllPokemons();
+    const pokemon = allPokemons.find(p => p._id === pokemonId);
     
     if (!pokemon) {
       throw new Error('Pokemon not found');
     }
     
-    if (pokemon.isAdopted) {
-      throw new Error('This pokemon is already adopted');
-    }
-    
-    if (user.coins < pokemon.adoptionCost) {
+    if (pokemon.price > (JSON.parse(localStorage.getItem('user') || '{"coins":0}').coins || 0)) {
       throw new Error('Not enough coins');
     }
     
-    // Update user coins and adopted pokemons
-    user.coins -= pokemon.adoptionCost;
-    user.adoptedPokemons = [...(user.adoptedPokemons || []), { ...pokemon, isAdopted: true }];
-    
-    // Update pokemon status
-    pokemon.isAdopted = true;
-    
-    localStorage.setItem('pokemon_user', JSON.stringify(user));
-    
-    return { 
-      pokemon, 
-      user,
-      message: `${pokemon.name} has been adopted successfully!` 
+    // Update the pokemon
+    const adoptedPokemon = { 
+      ...pokemon, 
+      isAdopted: true, 
+      lastFed: new Date(),
+      adoptedBy: 'currentUser'
     };
+    
+    // Update user
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedUser = { 
+      ...currentUser, 
+      coins: (currentUser.coins || 0) - pokemon.price 
+    };
+    
+    // Save to localStorage for persistence
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+    // Add to adopted pokemons
+    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    localStorage.setItem('adoptedPokemons', JSON.stringify([...adoptedPokemons, adoptedPokemon]));
+    
+    return { pokemon: adoptedPokemon, user: updatedUser as User };
   },
-  
-  feedPokemon: async (pokemonId: string) => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+
+  feedPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; message: string }> => {
+    // Mock the feeding process
+    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    const pokemonIndex = adoptedPokemons.findIndex((p: Pokemon) => p._id === pokemonId);
     
-    const user = JSON.parse(localStorage.getItem('pokemon_user') || '{}');
-    const pokemonIndex = user.adoptedPokemons?.findIndex((p: any) => p._id === pokemonId);
-    
-    if (pokemonIndex === -1 || pokemonIndex === undefined) {
-      throw new Error('Pokemon not found in your adopted list');
+    if (pokemonIndex === -1) {
+      throw new Error('Pokemon not found');
     }
     
-    // Update pokemon health and last fed time
-    user.adoptedPokemons[pokemonIndex].health = Math.min(100, user.adoptedPokemons[pokemonIndex].health + 10);
-    user.adoptedPokemons[pokemonIndex].lastFed = new Date();
+    // Update Pokemon health and lastFed
+    const updatedPokemon = {
+      ...adoptedPokemons[pokemonIndex],
+      health: Math.min(100, adoptedPokemons[pokemonIndex].health + 20),
+      lastFed: new Date()
+    };
     
-    localStorage.setItem('pokemon_user', JSON.stringify(user));
+    adoptedPokemons[pokemonIndex] = updatedPokemon;
+    localStorage.setItem('adoptedPokemons', JSON.stringify(adoptedPokemons));
     
     return { 
-      pokemon: user.adoptedPokemons[pokemonIndex],
-      message: `${user.adoptedPokemons[pokemonIndex].name} has been fed and is happier now!` 
+      pokemon: updatedPokemon, 
+      message: `${updatedPokemon.name} has been fed and is feeling better!` 
     };
   },
-  
-  getUserPokemons: async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+
+  collectFairyReward: async (): Promise<{ user: User; message: string }> => {
+    // Mock the fairy reward process
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
     
-    const user = JSON.parse(localStorage.getItem('pokemon_user') || '{}');
-    return user.adoptedPokemons || [];
+    // Update user with coins and timestamp
+    const updatedUser = {
+      ...currentUser,
+      coins: (currentUser.coins || 0) + 1, // Add 1 coin
+      lastFairyReward: new Date().toISOString()
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+    return {
+      user: updatedUser as User,
+      message: "You received 1 coin from Fairy Tuba!"
+    };
   },
-  
-  collectTubaReward: async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
+
+  collectTubaReward: async (): Promise<{ user: User; message: string }> => {
+    // Mock the tuba reward process
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
     
-    const user = JSON.parse(localStorage.getItem('pokemon_user') || '{}');
-    const lastReward = new Date(user.lastTubaReward);
+    // Check if 10 hours have passed since last collection
+    const lastReward = currentUser.lastTubaReward ? new Date(currentUser.lastTubaReward) : null;
     const currentTime = new Date();
     
-    // Check if 10 hours have passed
-    const hoursPassed = (currentTime.getTime() - lastReward.getTime()) / (1000 * 60 * 60);
-    
-    if (hoursPassed < 10) {
-      const hoursRemaining = Math.ceil(10 - hoursPassed);
-      throw new Error(`Fairy Tuba is still gathering coins! Come back in ${hoursRemaining} hours.`);
+    if (lastReward && ((currentTime.getTime() - lastReward.getTime()) < 10 * 60 * 60 * 1000)) {
+      throw new Error('You can collect this reward again in a few hours');
     }
     
-    // Update user coins and last reward time
-    user.coins += 5;
-    user.lastTubaReward = new Date();
+    // Update user with coins and timestamp
+    const updatedUser = {
+      ...currentUser,
+      coins: (currentUser.coins || 0) + 5, // Add 5 coins
+      lastTubaReward: new Date().toISOString()
+    };
     
-    localStorage.setItem('pokemon_user', JSON.stringify(user));
+    // Save to localStorage
+    localStorage.setItem('user', JSON.stringify(updatedUser));
     
-    return { 
-      user,
-      message: 'Hi I\'m fairy Tuba, here are your 5 coins, do visit after every 10 hours to get more coins, byeee!' 
+    return {
+      user: updatedUser as User,
+      message: "You received 5 coins from Fairy Tuba!"
     };
   },
-  
-  getDailyLoginReward: async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const user = JSON.parse(localStorage.getItem('pokemon_user') || '{}');
-    const lastLogin = new Date(user.lastLogin);
-    const currentTime = new Date();
-    
-    // Check if it's a new day (24 hours passed)
-    const daysPassed = (currentTime.getTime() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
-    
-    if (daysPassed < 1) {
-      throw new Error('You have already claimed your daily reward today!');
+
+  // Auth methods
+  login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
+    // In a real app, this would validate against a backend
+    if (credentials.email === 'user@example.com' && credentials.password === 'password') {
+      const user: User = {
+        _id: '12345',
+        username: 'DemoUser',
+        email: credentials.email,
+        coins: 100
+      };
+      
+      const token = 'mock-jwt-token';
+      
+      // Store in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', token);
+      
+      return { user, token };
     }
     
-    // Update user coins and last login
-    user.coins += 10;
-    user.lastLogin = new Date();
-    
-    localStorage.setItem('pokemon_user', JSON.stringify(user));
-    
-    return { 
-      user,
-      message: 'You received 10 coins as your daily login reward!' 
+    throw new Error('Invalid email or password');
+  },
+  
+  register: async (credentials: RegisterCredentials): Promise<AuthResponse> => {
+    // Mock registration
+    const user: User = {
+      _id: Math.random().toString(36).substring(7),
+      username: credentials.username,
+      email: credentials.email,
+      coins: 100
     };
+    
+    const token = 'mock-jwt-token';
+    
+    // Store in localStorage
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', token);
+    
+    return { user, token };
+  },
+  
+  logout: async (): Promise<void> => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('adoptedPokemons');
+    return;
+  },
+  
+  getCurrentUser: async (): Promise<User | null> => {
+    const userString = localStorage.getItem('user');
+    if (!userString) return null;
+    
+    return JSON.parse(userString) as User;
   }
 };

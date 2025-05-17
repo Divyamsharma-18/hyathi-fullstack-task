@@ -1,153 +1,117 @@
 
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { authService, mockApiService } from '../services/api';
-import { User } from '../types/types';
-import { useToast } from '../hooks/use-toast';
+import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { User, LoginCredentials, RegisterCredentials } from '@/types/types';
+import { mockApiService } from '@/services/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  error: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  register: (credentials: RegisterCredentials) => Promise<void>;
+  logout: () => Promise<void>;
   updateUser: (user: User) => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Check if user is logged in
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const currentUser = authService.getCurrentUser();
-        if (currentUser) {
-          setUser(currentUser);
-          setIsAuthenticated(true);
-        }
-      } catch (err) {
-        console.error('Auth check failed:', err);
+        const currentUser = await mockApiService.getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Auth check failed:', error);
       } finally {
         setIsLoading(false);
       }
     };
-
+    
     checkAuth();
   }, []);
 
-  // For demo purposes, also check for daily login reward
-  useEffect(() => {
-    const checkDailyReward = async () => {
-      if (isAuthenticated && user) {
-        try {
-          const lastLogin = new Date(user.lastLogin);
-          const currentDate = new Date();
-          const dayDiff = (currentDate.getTime() - lastLogin.getTime()) / (1000 * 60 * 60 * 24);
-          
-          // If it's a new day (more than 24 hours)
-          if (dayDiff >= 1) {
-            const response = await mockApiService.getDailyLoginReward();
-            setUser(response.user);
-            toast({
-              title: "Daily Reward!",
-              description: "You've received 10 coins for logging in today!",
-            });
-          }
-        } catch (err) {
-          console.error('Daily reward check failed:', err);
-        }
-      }
-    };
-
-    checkDailyReward();
-  }, [isAuthenticated, user, toast]);
-
-  const login = async (email: string, password: string) => {
+  const login = async (credentials: LoginCredentials) => {
     try {
       setIsLoading(true);
-      setError(null);
-      
-      // For demo purposes use mock service
-      const data = await mockApiService.login({ email, password });
-      
-      setUser(data.user);
-      setIsAuthenticated(true);
+      const response = await mockApiService.login(credentials);
+      setUser(response.user);
       toast({
-        title: "Login Successful",
-        description: `Welcome back, ${data.user.username}!`,
+        title: "Welcome back!",
+        description: `Logged in as ${response.user.username}`,
       });
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+    } catch (error: any) {
       toast({
-        title: "Login Failed",
-        description: err.message || 'Login failed. Please try again.',
+        title: "Login failed",
+        description: error.message || 'An error occurred during login',
         variant: "destructive",
       });
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  const register = async (credentials: RegisterCredentials) => {
     try {
       setIsLoading(true);
-      setError(null);
-      
-      // For demo purposes use mock service
-      const data = await mockApiService.register({ username, email, password });
-      
-      setUser(data.user);
-      setIsAuthenticated(true);
+      const response = await mockApiService.register(credentials);
+      setUser(response.user);
       toast({
-        title: "Registration Successful",
-        description: `Welcome to Hyathi's Pokémon Adoption Center, ${username}!`,
+        title: "Registration successful!",
+        description: `Welcome, ${response.user.username}!`,
       });
-    } catch (err: any) {
-      setError(err.message || 'Registration failed');
+    } catch (error: any) {
       toast({
-        title: "Registration Failed",
-        description: err.message || 'Registration failed. Please try again.',
+        title: "Registration failed",
+        description: error.message || 'An error occurred during registration',
         variant: "destructive",
       });
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
-    authService.logout();
-    setUser(null);
-    setIsAuthenticated(false);
-    toast({
-      title: "Logged Out",
-      description: "You have been successfully logged out.",
-    });
+  const logout = async () => {
+    try {
+      await mockApiService.logout();
+      setUser(null);
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Logout failed",
+        description: error.message || 'An error occurred during logout',
+        variant: "destructive",
+      });
+    }
   };
 
   const updateUser = (updatedUser: User) => {
     setUser(updatedUser);
-    localStorage.setItem('pokemon_user', JSON.stringify(updatedUser));
+    
+    // Also update in localStorage to persist changes
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated,
-        isLoading,
-        error,
-        login,
-        register,
+    <AuthContext.Provider 
+      value={{ 
+        user, 
+        isAuthenticated: !!user,
+        isLoading, 
+        login, 
+        register, 
         logout,
-        updateUser,
+        updateUser
       }}
     >
       {children}
@@ -155,10 +119,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
