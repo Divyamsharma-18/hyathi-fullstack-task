@@ -20,6 +20,38 @@ api.interceptors.request.use(
   }
 );
 
+// Function to decrease health for Pokémon not fed in 24 hours
+const updatePokemonHealth = () => {
+  try {
+    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    const now = new Date();
+    
+    const updatedPokemons = adoptedPokemons.map((pokemon: Pokemon) => {
+      if (!pokemon.lastFed) return pokemon;
+      
+      const lastFed = new Date(pokemon.lastFed);
+      const hoursSinceLastFed = (now.getTime() - lastFed.getTime()) / (1000 * 60 * 60);
+      
+      // If not fed in the last 24 hours, decrease health (simulating cron job)
+      if (hoursSinceLastFed >= 24) {
+        const healthDecrease = Math.floor(hoursSinceLastFed / 24) * 10;  // 10 health points per day
+        return {
+          ...pokemon,
+          health: Math.max(1, pokemon.health - healthDecrease) // Don't go below 1
+        };
+      }
+      
+      return pokemon;
+    });
+    
+    localStorage.setItem('adoptedPokemons', JSON.stringify(updatedPokemons));
+    return updatedPokemons;
+  } catch (error) {
+    console.error('Error updating Pokémon health:', error);
+    return [];
+  }
+};
+
 // Real API service for production use
 export const pokemonService = {
   getAllPokemons: async (): Promise<Pokemon[]> => {
@@ -28,8 +60,9 @@ export const pokemonService = {
   },
 
   getUserPokemons: async (): Promise<Pokemon[]> => {
-    const response = await api.get('/pokemons/user');
-    return response.data;
+    // Check and update health first (simulating a cron job)
+    const updatedPokemons = updatePokemonHealth();
+    return updatedPokemons;
   },
 
   adoptPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; user: User }> => {
@@ -349,3 +382,5 @@ export const mockApiService = {
     return JSON.parse(userString) as User;
   }
 };
+
+export { pokemonService };

@@ -17,6 +17,7 @@ const AdoptionCenter: React.FC = () => {
   const [adoptedPokemons, setAdoptedPokemons] = useState<Pokemon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("available");
 
   // Fetch pokemons
   useEffect(() => {
@@ -138,66 +139,81 @@ const AdoptionCenter: React.FC = () => {
     <div className="night-sky min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="mb-12">
-          <h1 className="pokemon-font text-3xl text-blue-300 mb-2">Welcome back, {user?.username}!</h1>
-          <p className="text-white mb-8">Rescued Pokémon are waiting for your love and care. Adopt them, feed them, and help them grow stronger!</p>
-          
-          <div className="flex gap-4 mb-8">
-            <button 
-              className="pixel-button flex-1"
-              onClick={() => {}}
-            >
-              ❤️ ADOPT A POKÉMON
-            </button>
-            <button 
-              className="pixel-button bg-blue-600 flex-1"
-              onClick={() => {}}
-            >
-              🔄 MY POKÉMON
-            </button>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="pokemon-font text-3xl text-blue-300 mb-2">Welcome back, {user?.username}!</h1>
+              <p className="text-white mb-8">Rescued Pokémon are waiting for your love and care. Adopt them, feed them, and help them grow stronger!</p>
+            </div>
+            
+            {/* Repositioned Fairy Tuba component */}
+            <div className="mt-2">
+              {isAuthenticated && <FairyTuba />}
+            </div>
           </div>
+          
+          <Tabs defaultValue="available" className="w-full" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger value="available" className="pokemon-font">❤️ ADOPT A POKÉMON</TabsTrigger>
+              <TabsTrigger value="adopted" className="pokemon-font">🔄 MY POKÉMON</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
         
         <div className="flex items-start gap-6">
-          <div className="w-3/4">
-            <h2 className="flex items-center justify-between mb-4">
-              <span className="pokemon-font text-2xl text-white">Available for Adoption</span>
-              <button className="text-blue-300 hover:text-blue-100">View all</button>
-            </h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {availablePokemons.map(pokemon => (
-                <PokemonCard 
-                  key={pokemon._id}
-                  pokemon={pokemon}
-                  onAdopt={handleAdoptPokemon}
-                  userCoins={user?.coins}
-                  actionLoading={actionLoading}
-                />
-              ))}
-            </div>
-          </div>
-          
-          <div className="w-1/4">
-            <div className="pixel-card p-4 text-white mb-4">
-              <div className="flex items-center mb-2">
-                <div className="trainer-avatar w-12 h-12 mr-3"></div>
-                <div>
-                  <p className="pokemon-font text-sm">Trainer</p>
-                  <p className="pokemon-font text-sm">Uddeshya</p>
+          <div className="w-full">
+            {activeTab === "available" && (
+              <>
+                <h2 className="flex items-center justify-between mb-4">
+                  <span className="pokemon-font text-2xl text-white">Available for Adoption</span>
+                </h2>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {availablePokemons.map(pokemon => (
+                    <PokemonCard 
+                      key={pokemon._id}
+                      pokemon={pokemon}
+                      onAdopt={handleAdoptPokemon}
+                      userCoins={user?.coins}
+                      actionLoading={actionLoading}
+                    />
+                  ))}
                 </div>
-              </div>
-            </div>
+              </>
+            )}
             
-            <div className="pixel-card p-4 text-white">
-              <div className="text-center">
-                <p className="pokemon-font text-xs mb-4">Don't forget to feed your Pokémon daily to keep them healthy!</p>
-              </div>
-            </div>
-            
-            {isAuthenticated && (
-              <div className="mt-4">
-                <FairyTuba />
-              </div>
+            {activeTab === "adopted" && (
+              <>
+                <div className="flex justify-between mb-4">
+                  <h2 className="pokemon-font text-2xl text-white">My Adopted Pokémon</h2>
+                  <div>
+                    <StatsCard />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {adoptedPokemons.length > 0 ? (
+                    adoptedPokemons.map(pokemon => (
+                      <PokemonCard 
+                        key={pokemon._id}
+                        pokemon={pokemon}
+                        onFeed={handleFeedPokemon}
+                        isAdopted={true}
+                        actionLoading={actionLoading}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-white text-xl mb-4">You haven't adopted any Pokémon yet</p>
+                      <button 
+                        className="pixel-button"
+                        onClick={() => setActiveTab("available")}
+                      >
+                        Find a Pokémon to Adopt
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </div>
