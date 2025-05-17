@@ -107,7 +107,7 @@ export const mockApiService = {
         age: 1,
         type: ['Grass', 'Poison'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-        description: 'Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun's rays, the seed grows progressively larger.',
+        description: "Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun's rays, the seed grows progressively larger.",
         health: 120,
         rarity: 'common',
         price: 30,
@@ -120,7 +120,7 @@ export const mockApiService = {
         age: 1,
         type: ['Fire'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
-        description: 'The flame that burns at the tip of its tail is an indication of its emotions. The flame wavers when Charmander is enjoying itself. If the Pokémon becomes enraged, the flame burns fiercely.',
+        description: "The flame that burns at the tip of its tail is an indication of its emotions. The flame wavers when Charmander is enjoying itself. If the Pokémon becomes enraged, the flame burns fiercely.",
         health: 80,
         rarity: 'common',
         price: 30,
@@ -133,7 +133,7 @@ export const mockApiService = {
         age: 1,
         type: ['Water'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
-        description: 'Squirtle's shell is not merely used for protection. The shell's rounded shape and the grooves on its surface minimize resistance in water, enabling this Pokémon to swim at high speeds.',
+        description: "Squirtle's shell is not merely used for protection. The shell's rounded shape and the grooves on its surface minimize resistance in water, enabling this Pokémon to swim at high speeds.",
         health: 90,
         rarity: 'common',
         price: 30,
@@ -185,7 +185,7 @@ export const mockApiService = {
         age: 3,
         type: ['Psychic'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png',
-        description: 'Mewtwo is a Pokémon that was created by genetic manipulation. However, even though the scientific power of humans created this Pokémon's body, they failed to endow Mewtwo with a compassionate heart.',
+        description: "Mewtwo is a Pokémon that was created by genetic manipulation. However, even though the scientific power of humans created this Pokémon's body, they failed to endow Mewtwo with a compassionate heart.",
         health: 150,
         rarity: 'legendary',
         price: 100,
@@ -237,7 +237,7 @@ export const mockApiService = {
         age: 1,
         type: ['Normal', 'Fairy'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png',
-        description: 'Jigglypuff's vocal cords can freely adjust the wavelength of its voice. This Pokémon uses this ability to sing at precisely the right wavelength to make its foes most drowsy.',
+        description: "Jigglypuff's vocal cords can freely adjust the wavelength of its voice. This Pokémon uses this ability to sing at precisely the right wavelength to make its foes most drowsy.",
         health: 95,
         rarity: 'common',
         price: 25,
@@ -276,7 +276,7 @@ export const mockApiService = {
         age: 1,
         type: ['Fire'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/58.png',
-        description: 'Growlithe has a superb sense of smell. Once it smells anything, this Pokémon won't forget the scent, no matter what. It uses its advanced olfactory sense to determine the emotions of other living things.',
+        description: "Growlithe has a superb sense of smell. Once it smells anything, this Pokémon won't forget the scent, no matter what. It uses its advanced olfactory sense to determine the emotions of other living things.",
         health: 90,
         rarity: 'common',
         price: 30,
@@ -341,6 +341,12 @@ export const mockApiService = {
   },
 
   feedPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; message: string }> => {
+    // Check if user has enough coins first (5 coins per feed)
+    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    if ((currentUser.coins || 0) < 5) {
+      throw new Error('Not enough coins to feed your Pokémon');
+    }
+    
     // Mock the feeding process
     const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
     const pokemonIndex = adoptedPokemons.findIndex((p: Pokemon) => p._id === pokemonId);
@@ -356,8 +362,16 @@ export const mockApiService = {
       lastFed: new Date()
     };
     
+    // Deduct 5 coins for feeding
+    const updatedUser = {
+      ...currentUser,
+      coins: (currentUser.coins || 0) - 5
+    };
+    
+    // Save changes
     adoptedPokemons[pokemonIndex] = updatedPokemon;
     localStorage.setItem('adoptedPokemons', JSON.stringify(adoptedPokemons));
+    localStorage.setItem('user', JSON.stringify(updatedUser));
     
     return { 
       pokemon: updatedPokemon, 

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Coins, Heart } from 'lucide-react';
+import { Coins, Heart, Star } from 'lucide-react';
 import { Pokemon } from '@/types/types';
 
 interface PokemonCardProps {
@@ -41,7 +41,8 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
   };
 
   // Check if pokemon is rare based on rarity or isRare property
-  const isRare = pokemon.isRare || pokemon.rarity === 'rare' || pokemon.rarity === 'legendary';
+  const isRare = pokemon.isRare || pokemon.rarity === 'rare';
+  const isLegendary = pokemon.rarity === 'legendary';
   
   // Get image URL from either imageUrl or image property
   const imageUrl = pokemon.imageUrl || pokemon.image;
@@ -49,26 +50,50 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
   // Get adoption cost from either adoptionCost or price property
   const adoptionCost = pokemon.adoptionCost || pokemon.price;
 
-  // Random age between 1-5 years
+  // Random age between 1-5 years if not provided
   const age = pokemon.age || Math.floor(Math.random() * 5) + 1;
 
   // Generate breed from type if not provided
   const breed = pokemon.breed || (Array.isArray(pokemon.type) ? pokemon.type[0] : pokemon.type);
 
+  // Get card class based on rarity
+  const getCardClass = () => {
+    let baseClass = 'pixel-card';
+    if (isLegendary) return `${baseClass} legendary-pokemon`;
+    if (isRare) return `${baseClass} rare-pokemon`;
+    return baseClass;
+  };
+
+  // Function to play pokemon cry
+  const playPokemonCry = () => {
+    // Get pokemon ID from image URL
+    const urlParts = imageUrl.split('/');
+    const fileName = urlParts[urlParts.length - 1];
+    const pokemonId = fileName.split('.')[0];
+    
+    // Create audio element
+    const audio = new Audio(`https://play.pokemonshowdown.com/audio/cries/${pokemon.name.toLowerCase()}.mp3`);
+    audio.volume = 0.3;
+    audio.play().catch(err => console.log('Error playing sound:', err));
+  };
+
   return (
-    <div className={`pixel-card overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-      isRare ? 'border-2 border-pokemon-gold' : ''
-    } ${
-      !isAdopted ? 'hover:border-blue-400 hover:shadow-blue-400/20' : 'hover:border-green-400 hover:shadow-green-400/20'
-    }`}>
+    <div className={getCardClass()}>
       {/* Pokemon Image Container */}
       <div className={`relative bg-[#1e3a64] aspect-square flex items-center justify-center p-2 ${
-        isRare ? 'bg-gradient-to-br from-[#1e3a64] to-pokemon-gold/30' : ''
+        isRare || isLegendary ? 'bg-gradient-to-br from-[#1e3a64] to-pokemon-gold/30' : ''
       }`}>
-        {/* Adopted Badge */}
+        {/* Adopted Badge for available pokemons that are adopted */}
         {pokemon.isAdopted && !isAdopted && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full z-10 pokemon-font">
-            Adopted
+          <div className="adopted-badge">
+            ADOPTED
+          </div>
+        )}
+        
+        {/* Star decoration for rare/legendary pokemon */}
+        {(isRare || isLegendary) && (
+          <div className="star-decoration">
+            <Star size={isLegendary ? 24 : 18} fill="#ffde00" stroke="#ffde00" />
           </div>
         )}
         
@@ -81,12 +106,16 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
       
       {/* Pokemon Info */}
       <div className={`p-3 ${
-        isRare ? 'bg-gradient-to-br from-[#102340] to-pokemon-gold/20' : 'bg-[#102340]'
+        isLegendary ? 'bg-gradient-to-br from-[#102340] to-pokemon-gold/20' : 
+        isRare ? 'bg-gradient-to-br from-[#102340] to-pokemon-gold/10' : 'bg-[#102340]'
       } text-white`}>
         <div className="flex justify-between items-center mb-2">
           <h3 className="pokemon-font text-sm">{pokemon.name}</h3>
-          {isRare && (
+          {isRare && !isLegendary && (
             <span className="bg-pokemon-gold text-xs px-1 rounded text-black">RARE</span>
+          )}
+          {isLegendary && (
+            <span className="bg-gradient-to-r from-pokemon-gold to-amber-400 text-xs px-1 rounded text-black font-bold">LEGENDARY</span>
           )}
         </div>
         
@@ -114,7 +143,12 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
         
         {!isAdopted ? (
           <button 
-            onClick={() => onAdopt && onAdopt(pokemon._id)}
+            onClick={() => {
+              if (onAdopt && !pokemon.isAdopted && userCoins >= adoptionCost && !actionLoading) {
+                onAdopt(pokemon._id);
+                playPokemonCry();
+              }
+            }}
             disabled={userCoins < adoptionCost || actionLoading || pokemon.isAdopted}
             className={`w-full py-1 pokemon-font text-center text-xs ${
               userCoins < adoptionCost || pokemon.isAdopted ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-500'
@@ -124,13 +158,18 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
           </button>
         ) : (
           <button 
-            onClick={() => onFeed && onFeed(pokemon._id)}
+            onClick={() => {
+              if (onFeed && pokemon.health < 100 && !actionLoading) {
+                onFeed(pokemon._id);
+                playPokemonCry();
+              }
+            }}
             disabled={pokemon.health >= 100 || actionLoading}
             className={`w-full py-1 pokemon-font text-center text-xs ${
               pokemon.health >= 100 ? 'bg-gray-600' : 'bg-green-600 hover:bg-green-500'
             }`}
           >
-            {pokemon.health >= 100 ? 'FULLY FED' : 'FEED'}
+            {pokemon.health >= 100 ? 'FULLY FED' : 'FEED (5 COINS)'}
           </button>
         )}
       </div>

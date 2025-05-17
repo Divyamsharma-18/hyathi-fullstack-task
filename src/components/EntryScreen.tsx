@@ -7,7 +7,6 @@ interface EntryScreenProps {
 
 const EntryScreen: React.FC<EntryScreenProps> = ({ onEnter }) => {
   const [showWelcomeText, setShowWelcomeText] = useState(false);
-  const [showEnterButton, setShowEnterButton] = useState(false);
   const [stars, setStars] = useState<{top: string, left: string, animation: string}[]>([]);
   const [fireflies, setFireflies] = useState<{top: string, left: string, animation: string}[]>([]);
 
@@ -33,11 +32,11 @@ const EntryScreen: React.FC<EntryScreenProps> = ({ onEnter }) => {
       setShowWelcomeText(true);
     }, 500);
     
-    // Show enter button after delay
+    // Auto-progress after 2 seconds
     setTimeout(() => {
-      setShowEnterButton(true);
+      onEnter();
     }, 2500);
-  }, []);
+  }, [onEnter]);
 
   return (
     <div className="fixed inset-0 night-sky flex flex-col items-center justify-center overflow-hidden">
@@ -80,16 +79,6 @@ const EntryScreen: React.FC<EntryScreenProps> = ({ onEnter }) => {
           Pokémon Adoption Center
         </h1>
       </div>
-      
-      {/* Enter button */}
-      {showEnterButton && (
-        <button
-          onClick={onEnter}
-          className="pixel-button animate-pulse mt-8"
-        >
-          ✨ ENTER THE ADOPTION CENTER
-        </button>
-      )}
     </div>
   );
 };

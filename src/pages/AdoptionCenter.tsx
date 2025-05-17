@@ -26,7 +26,7 @@ const AdoptionCenter: React.FC = () => {
         setIsLoading(true);
         // For demo purposes use mock service
         const pokemons = await mockApiService.getAllPokemons();
-        setAvailablePokemons(pokemons.filter((p: Pokemon) => !p.isAdopted));
+        setAvailablePokemons(pokemons);
         
         if (isAuthenticated) {
           const userPokemons = await mockApiService.getUserPokemons();
@@ -62,7 +62,9 @@ const AdoptionCenter: React.FC = () => {
       const response = await mockApiService.adoptPokemon(pokemonId);
       
       // Update available pokemons
-      setAvailablePokemons(prev => prev.filter(p => p._id !== pokemonId));
+      setAvailablePokemons(prev => prev.map(p => 
+        p._id === pokemonId ? { ...p, isAdopted: true } : p
+      ));
       
       // Update adopted pokemons
       setAdoptedPokemons(prev => [...prev, response.pokemon]);
@@ -75,11 +77,6 @@ const AdoptionCenter: React.FC = () => {
         title: 'Adoption Successful',
         description: `${response.pokemon.name} has been adopted successfully! Uddeshya congratulates you — you're a true Pokémon lover!`,
       });
-      
-      // Play adoption sound
-      const adoptSound = new Audio('/adopt.mp3');
-      adoptSound.volume = 0.5;
-      adoptSound.play().catch(error => console.error('Error playing sound:', error));
       
     } catch (error: any) {
       toast({
@@ -102,16 +99,15 @@ const AdoptionCenter: React.FC = () => {
         prev.map(p => p._id === pokemonId ? response.pokemon : p)
       );
       
+      // Update user data (because feeding costs coins)
+      const updatedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      updateUser(updatedUser);
+      
       // Show success message
       toast({
         title: 'Feeding Successful',
         description: response.message,
       });
-      
-      // Play feeding sound
-      const feedSound = new Audio('/feed.mp3');
-      feedSound.volume = 0.5;
-      feedSound.play().catch(error => console.error('Error playing sound:', error));
       
     } catch (error: any) {
       toast({
@@ -141,7 +137,7 @@ const AdoptionCenter: React.FC = () => {
         <div className="mb-12">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="pokemon-font text-3xl text-blue-300 mb-2">Welcome back, {user?.username}!</h1>
+              <h1 className="pokemon-font text-3xl text-blue-300 mb-2">Welcome back, {user?.username || 'Trainer'}!</h1>
               <p className="text-white mb-8">Rescued Pokémon are waiting for your love and care. Adopt them, feed them, and help them grow stronger!</p>
             </div>
             
@@ -183,12 +179,10 @@ const AdoptionCenter: React.FC = () => {
             
             {activeTab === "adopted" && (
               <>
-                <div className="flex justify-between mb-4">
-                  <h2 className="pokemon-font text-2xl text-white">My Adopted Pokémon</h2>
-                  <div>
-                    <StatsCard />
-                  </div>
-                </div>
+                <h2 className="pokemon-font text-2xl text-white mb-4">My Adopted Pokémon</h2>
+                
+                {/* Horizontal stats card */}
+                <StatsCard />
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {adoptedPokemons.length > 0 ? (
@@ -199,6 +193,7 @@ const AdoptionCenter: React.FC = () => {
                         onFeed={handleFeedPokemon}
                         isAdopted={true}
                         actionLoading={actionLoading}
+                        userCoins={user?.coins}
                       />
                     ))
                   ) : (

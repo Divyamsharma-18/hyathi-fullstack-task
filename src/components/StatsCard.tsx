@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import { Heart } from 'lucide-react';
 
@@ -22,43 +21,37 @@ const StatsCard: React.FC = () => {
   const healthStats = calculatePokemonHealth();
   
   return (
-    <Card className="shadow-md bg-gradient-to-br from-[#1a2b47] to-[#102340] border border-blue-500/30">
-      <CardContent className="p-6">
-        <div className="text-center mb-4">
-          <h3 className="text-lg font-bold text-blue-300 pokemon-font">Trainer Stats</h3>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 bg-[#0a1128]/50 rounded-lg border border-blue-500/20">
-            <p className="text-sm text-blue-300">Adopted Pokémon</p>
-            <p className="text-2xl font-bold text-pokemon-blue">
-              {user?.adoptedPokemons?.length || 0}
-            </p>
-          </div>
-          
-          <div className="text-center p-3 bg-[#0a1128]/50 rounded-lg border border-blue-500/20">
-            <p className="text-sm text-blue-300">Available Coins</p>
-            <p className="text-2xl font-bold text-pokemon-yellow">
-              {user?.coins || 0}
-            </p>
-          </div>
-          
-          <div className="text-center p-3 bg-[#0a1128]/50 rounded-lg border border-blue-500/20">
-            <p className="text-sm text-blue-300">Healthy Pokémon</p>
-            <p className="text-2xl font-bold text-green-500">
-              {healthStats.healthy}
-            </p>
-          </div>
-          
-          <div className="text-center p-3 bg-[#0a1128]/50 rounded-lg border border-blue-500/20">
-            <p className="text-sm text-blue-300">Need Feeding</p>
-            <p className="text-2xl font-bold text-red-500">
-              {healthStats.danger}
-            </p>
+    <div className="w-full bg-gradient-to-r from-[#152642] to-[#0a1128] border border-blue-500/30 rounded-lg shadow-lg p-4 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center px-4 py-2 bg-blue-900/30 rounded-lg">
+          <div className="mr-3 text-blue-300">
+            <span className="block text-xs">Adopted Pokémon</span>
+            <span className="block text-2xl font-bold">{user?.adoptedPokemons?.length || 0}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        <div className="flex items-center px-4 py-2 bg-blue-900/30 rounded-lg">
+          <div className="mr-3 text-pokemon-yellow">
+            <span className="block text-xs">Available Coins</span>
+            <span className="block text-2xl font-bold">{user?.coins || 0}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center px-4 py-2 bg-blue-900/30 rounded-lg">
+          <div className="mr-3 text-green-500">
+            <span className="block text-xs">Healthy Pokémon</span>
+            <span className="block text-2xl font-bold">{healthStats.healthy}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center px-4 py-2 bg-blue-900/30 rounded-lg">
+          <div className="mr-3 text-red-500">
+            <span className="block text-xs">Need Feeding</span>
+            <span className="block text-2xl font-bold">{healthStats.danger}</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

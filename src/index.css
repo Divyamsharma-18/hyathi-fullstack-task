@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -91,7 +92,7 @@
   overflow: hidden;
 }
 
-/* Create stars */
+/* Create stars - increased size for better visibility */
 .night-sky::before {
   content: '';
   position: absolute;
@@ -100,18 +101,18 @@
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(1px 1px at 50px 200px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 100px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 150px 50px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 250px 350px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 350px 100px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 400px 200px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 450px 300px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 500px 100px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 550px 250px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 600px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 650px 350px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 700px 50px, white, rgba(0,0,0,0));
+    radial-gradient(2px 2px at 50px 200px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 100px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 150px 50px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 250px 350px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 350px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 400px 200px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 450px 300px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 500px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 550px 250px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 600px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 650px 350px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 700px 50px, white, rgba(0,0,0,0));
   background-repeat: repeat;
   background-size: 750px 750px;
   animation: twinkling 10s infinite linear;
@@ -119,7 +120,7 @@
   z-index: 0;
 }
 
-/* Second set of stars with different animation timing */
+/* Second set of stars with different animation timing - increased size */
 .night-sky::after {
   content: '';
   position: absolute;
@@ -128,22 +129,41 @@
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(1px 1px at 25px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 75px 100px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 175px 75px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 275px 300px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 325px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 425px 225px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 475px 275px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 525px 75px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 575px 225px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 625px 125px, white, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 675px 325px, white, rgba(0,0,0,0));
+    radial-gradient(2px 2px at 25px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 75px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 175px 75px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 275px 300px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 325px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 425px 225px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 475px 275px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 525px 75px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 575px 225px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 625px 125px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 675px 325px, white, rgba(0,0,0,0));
   background-repeat: repeat;
   background-size: 750px 750px;
   animation: twinkling 15s infinite linear;
   pointer-events: none;
   z-index: 0;
+}
+
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background-color: #fff;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.firefly {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: rgba(255, 255, 100, 0.8);
+  border-radius: 50%;
+  box-shadow: 0 0 4px 2px rgba(255, 255, 100, 0.3);
+  z-index: 1;
 }
 
 @keyframes twinkling {
@@ -215,7 +235,7 @@
   margin-left: -20px;
 }
 
-/* Card Hover Effects */
+/* Improved Card Hover Effects with shadows */
 .pixel-card {
   background-color: #1a2b47;
   border: 2px solid #3b4cca;
@@ -224,12 +244,36 @@
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   z-index: 1;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .pixel-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 10px 25px -5px rgba(59, 76, 202, 0.4);
+  box-shadow: 0 10px 25px -5px rgba(59, 76, 202, 0.6), 0 0 20px rgba(59, 76, 202, 0.4);
   border-color: rgba(59, 76, 202, 0.8);
+}
+
+/* Golden border and glow for rare pokemon */
+.pixel-card.rare-pokemon {
+  border: 2px solid #B69E31;
+  background-color: #1a2b47;
+  background-image: linear-gradient(145deg, rgba(182, 158, 49, 0.1) 0%, rgba(37, 51, 85, 1) 100%);
+}
+
+.pixel-card.rare-pokemon:hover {
+  box-shadow: 0 10px 25px -5px rgba(182, 158, 49, 0.6), 0 0 20px rgba(255, 215, 0, 0.4);
+  border-color: #ffde00;
+}
+
+.pixel-card.legendary-pokemon {
+  border: 3px solid #ffde00;
+  background-color: #1a2b47;
+  background-image: linear-gradient(145deg, rgba(255, 223, 0, 0.15) 0%, rgba(37, 51, 85, 1) 100%);
+}
+
+.pixel-card.legendary-pokemon:hover {
+  box-shadow: 0 10px 30px -5px rgba(255, 223, 0, 0.7), 0 0 25px rgba(255, 223, 0, 0.5);
+  border-color: #ffde00;
 }
 
 .pixel-card:before {
@@ -278,4 +322,57 @@
   border: 3px solid #3b4cca;
   overflow: hidden;
   background-color: #1a2b47;
+}
+
+/* Star decoration for rare pokemon */
+.star-decoration {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #ffde00;
+  font-size: 16px;
+  text-shadow: 0 0 5px rgba(255, 222, 0, 0.7);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Adopted badge styling */
+.adopted-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: #ff3e3e;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  z-index: 10;
+  font-family: 'Press Start 2P', cursive;
+  transform: rotate(-10deg);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Form styling to match theme */
+.auth-form {
+  background-color: #1a2b47;
+  border: 2px solid #3b4cca;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Input styling to match theme */
+.auth-input {
+  background-color: #102340;
+  border: 1px solid #3b4cca;
+  color: white;
 }
