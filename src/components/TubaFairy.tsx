@@ -1,143 +1,153 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Coins } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useAuth } from '@/context/AuthContext';
-import { mockApiService } from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 
 const TubaFairy: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [canCollect, setCanCollect] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const { user, updateUser } = useAuth();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
-  const [isHovering, setIsHovering] = useState(false);
 
+  // Check if the user can collect coins
   useEffect(() => {
-    if (user?.lastTubaReward) {
-      updateTimeRemaining();
-      const timer = setInterval(updateTimeRemaining, 60000); // Update every minute
-      return () => clearInterval(timer);
-    }
+    const checkCollectStatus = () => {
+      if (!user || !user.lastTubaReward) {
+        setCanCollect(true);
+        return;
+      }
+
+      const lastReward = new Date(user.lastTubaReward);
+      const now = new Date();
+      const hoursSinceLastReward = (now.getTime() - lastReward.getTime()) / (1000 * 60 * 60);
+      
+      if (hoursSinceLastReward >= 1) {
+        setCanCollect(true);
+        setTimeRemaining(0);
+      } else {
+        setCanCollect(false);
+        // Calculate remaining time in milliseconds
+        const remainingMs = (1 * 60 * 60 * 1000) - (now.getTime() - lastReward.getTime());
+        setTimeRemaining(Math.ceil(remainingMs / 1000));
+      }
+    };
+
+    checkCollectStatus();
+    const interval = setInterval(checkCollectStatus, 30000); // Check every 30 seconds
+    
+    return () => clearInterval(interval);
   }, [user]);
 
-  const updateTimeRemaining = () => {
-    if (!user?.lastTubaReward) return;
+  // Update time remaining countdown
+  useEffect(() => {
+    if (timeRemaining <= 0) return;
     
-    const lastReward = new Date(user.lastTubaReward);
-    const currentTime = new Date();
+    const timer = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setCanCollect(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
     
-    // Add 10 hours to last reward time
-    const nextRewardTime = new Date(lastReward.getTime() + 10 * 60 * 60 * 1000);
-    
-    // Calculate time difference
-    const diff = nextRewardTime.getTime() - currentTime.getTime();
-    
-    if (diff <= 0) {
-      setTimeRemaining('Ready to collect!');
-    } else {
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      setTimeRemaining(`${hours}h ${minutes}m remaining`);
-    }
+    return () => clearInterval(timer);
+  }, [timeRemaining]);
+
+  // Format remaining time
+  const formatTimeRemaining = () => {
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const collectReward = async () => {
+  // Handle coin collection
+  const handleCollectCoins = async () => {
     try {
-      setIsLoading(true);
-      const response = await mockApiService.collectTubaReward();
-      updateUser(response.user);
+      if (!canCollect) return;
       
-      toast({
-        title: "Fairy Tuba",
-        description: response.message,
-      });
+      // Call API to collect coins (using mock API for now)
+      const updatedUser = { 
+        ...user,
+        coins: (user?.coins || 0) + 1,
+        lastTubaReward: new Date().toISOString()
+      };
+      
+      // Update user data in context
+      updateUser(updatedUser);
       
       // Play coin sound
       const coinSound = new Audio('/coin.mp3');
       coinSound.volume = 0.5;
       coinSound.play().catch(error => console.error('Error playing sound:', error));
       
-      updateTimeRemaining();
-    } catch (error: any) {
+      // Show success toast
       toast({
-        title: "Fairy Tuba",
-        description: error.message,
-        variant: "destructive",
+        title: 'Coin Collected',
+        description: 'You received 1 coin from Tuba Fairy!',
       });
-    } finally {
-      setIsLoading(false);
+      
+      // Reset collection status and start cooldown
+      setCanCollect(false);
+      setTimeRemaining(60 * 60); // 1 hour in seconds
+      
+    } catch (error) {
+      console.error('Failed to collect coins:', error);
+      toast({
+        title: 'Collection Failed',
+        description: 'Failed to collect coins. Please try again later.',
+        variant: 'destructive',
+      });
     }
+    
+    // Close the dialog
+    setIsOpen(false);
   };
 
-  const canCollect = timeRemaining === 'Ready to collect!';
-
   return (
-    <Card 
-      className={`overflow-hidden shadow-lg transition-all border-2 ${
-        canCollect ? 'border-pokemon-gold animate-pulse-glow' : 'border-purple-300'
-      }`}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-    >
-      <CardContent className="p-0">
-        <div className="flex flex-col items-center">
-          <div className="w-full aspect-square relative overflow-hidden">
-            <div 
-              className="absolute inset-0 bg-gradient-to-b from-purple-100 to-purple-300"
-              style={{
-                transform: isHovering ? 'scale(1.05)' : 'scale(1)',
-                transition: 'transform 0.5s ease-in-out'
-              }}
-            />
-            <img 
-              src="https://i.ibb.co/2WNz3XF/fairy-tuba.png"
-              alt="Fairy Tuba"
-              className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-4/5 h-auto"
-              style={{
-                transform: isHovering 
-                  ? 'translate(-50%, 0) scale(1.05)' 
-                  : 'translate(-50%, 0)',
-                transition: 'transform 0.5s ease-in-out'
-              }}
-            />
-            <div className="absolute top-2 right-2 bg-purple-500 text-white rounded-full px-3 py-1 text-xs font-bold">
-              Fairy
-            </div>
-          </div>
+    <>
+      <button 
+        onClick={() => setIsOpen(true)}
+        className={`rounded-full w-12 h-12 flex items-center justify-center border-2 ${
+          canCollect ? 'border-pokemon-yellow animate-pulse bg-blue-900/70' : 'border-gray-600 bg-blue-900/30'
+        }`}
+        title="Tuba Fairy"
+      >
+        <span className="text-2xl">✨</span>
+      </button>
+      
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="pixel-card max-w-sm bg-[#102340] text-white border-blue-600">
+          <DialogHeader>
+            <DialogTitle className="pokemon-font text-blue-300 text-center">FAIRY TUBA</DialogTitle>
+          </DialogHeader>
           
-          <div className="p-4 w-full">
-            <h3 className="font-bold text-lg mb-1 text-purple-700">Fairy Tuba</h3>
+          <div className="flex flex-col items-center py-4">
+            <div className="w-24 h-24 rounded-full bg-blue-700 mb-4 flex items-center justify-center">
+              <span className="text-4xl">✨</span>
+            </div>
             
-            <p className="text-sm text-gray-600 mb-3">
-              Visit Fairy Tuba every 10 hours to receive 5 coins!
-            </p>
+            <DialogDescription className="text-center text-white mb-4">
+              {canCollect 
+                ? "Hi I'm fairy Tuba, here's your 1 coin! Do visit after every hour to get more coins, byeee!" 
+                : `I'll have another coin for you in ${formatTimeRemaining()}. Come back later!`}
+            </DialogDescription>
             
-            {timeRemaining && (
-              <div className="mb-3 text-center text-sm">
-                <span className={canCollect ? 'text-green-600 font-bold' : 'text-gray-500'}>
-                  {timeRemaining}
-                </span>
-              </div>
-            )}
-            
-            <Button 
-              className={`w-full ${
-                canCollect 
-                  ? 'bg-purple-600 hover:bg-purple-700' 
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-              disabled={!canCollect || isLoading}
-              onClick={collectReward}
+            <button
+              onClick={handleCollectCoins}
+              disabled={!canCollect}
+              className={`pixel-button w-full ${!canCollect ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              <Coins className="w-4 h-4 mr-2" />
-              Collect 5 Coins
-            </Button>
+              {canCollect ? 'COLLECT 1 COIN' : 'COME BACK LATER'}
+            </button>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

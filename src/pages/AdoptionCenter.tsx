@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { pokemonService, mockApiService } from '@/services/api';
@@ -124,54 +125,46 @@ const AdoptionCenter: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen night-sky flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-t-pokemon-yellow border-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-lg">Loading Pokémon...</p>
+          <p className="pokemon-font text-white">Loading Pokémon...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-        <div className="md:col-span-2">
-          <h1 className="text-3xl font-bold mb-2">Welcome to the Adoption Center</h1>
-          <p className="text-gray-600 mb-4">
-            Here you can adopt Pokémon and care for them. Each Pokémon has unique traits and needs.
-          </p>
-        </div>
-        <div className="md:col-span-1">
-          <div className="flex items-center justify-between">
-            <StatsCard />
-            {isAuthenticated && (
-              <div className="ml-4">
-                <FairyTuba />
-              </div>
-            )}
+    <div className="night-sky min-h-screen py-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
+        <div className="mb-12">
+          <h1 className="pokemon-font text-3xl text-blue-300 mb-2">Welcome back, {user?.username}!</h1>
+          <p className="text-white mb-8">Rescued Pokémon are waiting for your love and care. Adopt them, feed them, and help them grow stronger!</p>
+          
+          <div className="flex gap-4 mb-8">
+            <button 
+              className="pixel-button flex-1"
+              onClick={() => {}}
+            >
+              ❤️ ADOPT A POKÉMON
+            </button>
+            <button 
+              className="pixel-button bg-blue-600 flex-1"
+              onClick={() => {}}
+            >
+              🔄 MY POKÉMON
+            </button>
           </div>
         </div>
-      </div>
-      
-      <Tabs defaultValue="available">
-        <div className="flex justify-between items-center mb-4">
-          <TabsList>
-            <TabsTrigger value="available">Available Pokémon</TabsTrigger>
-            <TabsTrigger value="adopted" disabled={!isAuthenticated || adoptedPokemons.length === 0}>
-              My Pokémon {adoptedPokemons.length > 0 && `(${adoptedPokemons.length})`}
-            </TabsTrigger>
-          </TabsList>
-        </div>
         
-        <TabsContent value="available">
-          {availablePokemons.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-xl">No Pokémon are available for adoption at the moment.</p>
-              <p className="text-gray-500 mt-2">Check back soon!</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex items-start gap-6">
+          <div className="w-3/4">
+            <h2 className="flex items-center justify-between mb-4">
+              <span className="pokemon-font text-2xl text-white">Available for Adoption</span>
+              <button className="text-blue-300 hover:text-blue-100">View all</button>
+            </h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {availablePokemons.map(pokemon => (
                 <PokemonCard 
                   key={pokemon._id}
@@ -182,34 +175,33 @@ const AdoptionCenter: React.FC = () => {
                 />
               ))}
             </div>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="adopted">
-          {!isAuthenticated ? (
-            <div className="text-center py-12">
-              <p className="text-xl">Please log in to see your adopted Pokémon.</p>
+          </div>
+          
+          <div className="w-1/4">
+            <div className="pixel-card p-4 text-white mb-4">
+              <div className="flex items-center mb-2">
+                <div className="trainer-avatar w-12 h-12 mr-3"></div>
+                <div>
+                  <p className="pokemon-font text-sm">Trainer</p>
+                  <p className="pokemon-font text-sm">Uddeshya</p>
+                </div>
+              </div>
             </div>
-          ) : adoptedPokemons.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-xl">You haven't adopted any Pokémon yet.</p>
-              <p className="text-gray-500 mt-2">Switch to the Available tab to adopt your first Pokémon!</p>
+            
+            <div className="pixel-card p-4 text-white">
+              <div className="text-center">
+                <p className="pokemon-font text-xs mb-4">Don't forget to feed your Pokémon daily to keep them healthy!</p>
+              </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {adoptedPokemons.map(pokemon => (
-                <PokemonCard 
-                  key={pokemon._id}
-                  pokemon={pokemon}
-                  isAdopted={true}
-                  onFeed={handleFeedPokemon}
-                  actionLoading={actionLoading}
-                />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
+            
+            {isAuthenticated && (
+              <div className="mt-4">
+                <FairyTuba />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

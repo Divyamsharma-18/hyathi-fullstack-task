@@ -1,8 +1,5 @@
 
 import React from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Coins, Heart } from 'lucide-react';
 import { Pokemon } from '@/types/types';
 
@@ -53,80 +50,64 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
   const adoptionCost = pokemon.adoptionCost || pokemon.price;
 
   return (
-    <Card className={`overflow-hidden shadow-lg transform transition-all hover:scale-105 ${isRare ? 'card-rare' : 'card-normal'}`}>
-      <CardHeader className="bg-pokemon-blue p-4">
-        <div className="flex justify-between items-center">
-          <CardTitle className="text-white font-bold">{pokemon.name}</CardTitle>
-          <span className="bg-white text-xs font-semibold px-2 py-1 rounded-full text-pokemon-blue">
-            {Array.isArray(pokemon.type) ? pokemon.type.join(', ') : pokemon.type}
-          </span>
-        </div>
-      </CardHeader>
-      
-      <div className="relative">
+    <div className="pixel-card overflow-hidden transition-transform hover:scale-105">
+      {/* Pokemon Image */}
+      <div className="bg-[#1e3a64] aspect-square flex items-center justify-center p-2">
         <img 
           src={imageUrl} 
           alt={pokemon.name}
-          className="w-full h-48 object-contain bg-gray-100"
+          className="max-w-full max-h-full object-contain"
         />
-        {isRare && (
-          <span className="absolute top-2 right-2 bg-pokemon-gold text-white text-xs font-bold px-2 py-1 rounded-full">
-            RARE
-          </span>
-        )}
       </div>
       
-      <CardContent className="p-4">
-        <p className="text-sm mb-4">{pokemon.description}</p>
-        
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-sm">
-            <span>Health:</span>
-            <span>{pokemon.health}/100</span>
-          </div>
-          <Progress value={pokemon.health} className={getHealthStatusColor()} />
-          
-          {isAdopted && (
-            <div className="text-xs text-gray-600 mt-1">
-              Last fed: {getTimeSinceLastFed()}
-            </div>
+      {/* Pokemon Info */}
+      <div className="p-3 bg-[#102340] text-white">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="pokemon-font text-sm">{pokemon.name}</h3>
+          {isRare && (
+            <span className="bg-pokemon-gold text-xs px-1 rounded text-black">RARE</span>
           )}
         </div>
-      </CardContent>
-      
-      <CardFooter className="bg-gray-50 p-4 flex justify-between">
+        
+        <div className="flex justify-between text-xs mb-1">
+          <span>Type: {Array.isArray(pokemon.type) ? pokemon.type.join(', ') : pokemon.type}</span>
+        </div>
+        
+        <div className="flex justify-between text-xs mb-2">
+          <span>Health:</span>
+          <span>{pokemon.health}/100</span>
+        </div>
+        
+        <div className="w-full h-2 bg-gray-700 mb-3">
+          <div 
+            className={`h-full ${getHealthStatusColor()}`}
+            style={{ width: `${pokemon.health}%` }}
+          ></div>
+        </div>
+        
         {!isAdopted ? (
-          <>
-            <div className="flex items-center">
-              <Coins className="h-5 w-5 mr-1 text-pokemon-gold" />
-              <span>{adoptionCost} coins</span>
-            </div>
-            <Button 
-              onClick={() => onAdopt && onAdopt(pokemon._id)}
-              disabled={userCoins < adoptionCost || actionLoading || pokemon.isAdopted}
-              className="bg-pokemon-blue hover:bg-blue-700"
-            >
-              {userCoins < adoptionCost ? 'Not enough coins' : 'Adopt'}
-            </Button>
-          </>
+          <button 
+            onClick={() => onAdopt && onAdopt(pokemon._id)}
+            disabled={userCoins < adoptionCost || actionLoading || pokemon.isAdopted}
+            className={`w-full py-1 pokemon-font text-center text-xs ${
+              userCoins < adoptionCost ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-500'
+            }`}
+          >
+            ADOPT ({adoptionCost} COINS)
+          </button>
         ) : (
-          <>
-            <div className="flex items-center">
-              <Heart className="h-5 w-5 mr-1 text-pokemon-red" />
-              <span>Adopted</span>
-            </div>
-            <Button 
-              onClick={() => onFeed && onFeed(pokemon._id)}
-              disabled={pokemon.health >= 100 || actionLoading}
-              variant="outline"
-              className="border-pokemon-blue text-pokemon-blue hover:bg-pokemon-blue/10"
-            >
-              {pokemon.health >= 100 ? 'Not Hungry' : 'Feed'}
-            </Button>
-          </>
+          <button 
+            onClick={() => onFeed && onFeed(pokemon._id)}
+            disabled={pokemon.health >= 100 || actionLoading}
+            className={`w-full py-1 pokemon-font text-center text-xs ${
+              pokemon.health >= 100 ? 'bg-gray-600' : 'bg-green-600 hover:bg-green-500'
+            }`}
+          >
+            {pokemon.health >= 100 ? 'FULLY FED' : 'FEED'}
+          </button>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 

@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
 
 interface EntryScreenProps {
   onEnter: () => void;
@@ -70,28 +69,27 @@ const EntryScreen: React.FC<EntryScreenProps> = ({ onEnter }) => {
       
       {/* Welcome text */}
       <div 
-        className={`text-center mb-8 transition-opacity duration-1000 ${
+        className={`text-center mb-12 transition-opacity duration-1000 ${
           showWelcomeText ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <h1 className="text-white text-3xl md:text-4xl font-bold pokemon-font">
-          Welcome to Hyathi's Pokémon Adoption Center...
+        <h1 className="pixelated-heading text-2xl md:text-4xl mb-2">
+          Welcome to Hyathi's
+        </h1>
+        <h1 className="pixelated-heading text-2xl md:text-4xl">
+          Pokémon Adoption Center
         </h1>
       </div>
       
       {/* Enter button */}
-      <div 
-        className={`transition-opacity duration-1000 ${
-          showEnterButton ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <Button
+      {showEnterButton && (
+        <button
           onClick={onEnter}
-          className="text-lg bg-pokemon-yellow text-black hover:bg-yellow-400 px-8 py-6 rounded-xl font-bold animate-pulse-glow"
+          className="pixel-button animate-pulse mt-8"
         >
-          Enter the Adoption Center
-        </Button>
-      </div>
+          ✨ ENTER THE ADOPTION CENTER
+        </button>
+      )}
     </div>
   );
 };

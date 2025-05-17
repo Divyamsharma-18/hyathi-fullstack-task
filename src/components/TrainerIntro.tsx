@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 
 interface TrainerIntroProps {
   onContinue: () => void;
@@ -21,65 +20,46 @@ const TrainerIntro: React.FC<TrainerIntroProps> = ({ onContinue }) => {
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8">
-      <Card className="overflow-hidden bg-white shadow-xl">
-        <CardContent className="p-0">
-          <div className="flex flex-col md:flex-row">
-            {/* Trainer Image */}
-            <div className="md:w-1/3 bg-pokemon-blue p-6 flex flex-col items-center justify-center">
-              <div className="rounded-full overflow-hidden border-4 border-pokemon-yellow w-48 h-48 mb-4">
-                <img 
-                  src="https://i.ibb.co/ZW2f6xf/trainer-placeholder.png" 
-                  alt="Trainer Uddeshya"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h2 className="text-white text-xl font-bold">Trainer Uddeshya</h2>
-              <p className="text-white/80 text-sm">Founder of Hyathi Adoption Center</p>
+      <div className="pixel-card p-6 md:p-8 text-white">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Trainer Image */}
+          <div className="md:w-1/3 flex flex-col items-center text-center">
+            <div className="trainer-avatar mb-4 flex items-center justify-center">
+              <div className="w-full h-full rounded-full overflow-hidden bg-blue-600"></div>
+            </div>
+            <h2 className="pokemon-font text-xl mb-1">Trainer Uddeshya</h2>
+            <p className="text-blue-300 text-sm">Founder & Lead Trainer</p>
+          </div>
+          
+          {/* Trainer Message */}
+          <div className="md:w-2/3 flex flex-col">
+            <div className={`${isTyping ? 'typing-animation w-0' : 'w-full'}`}>
+              <p className="mb-4 text-white">
+                Hey there, future Pokémon trainer! I'm Uddeshya, and I've dedicated my life to rescuing and rehabilitating Pokémon in need.
+              </p>
+              <p className="mb-4 text-white">
+                At Hyathi's Adoption Center, we believe every Pokémon deserves a loving home. Some of our rescued friends are quite special – we even have a Porygon who helps with our website coding!
+              </p>
+              <p className="mb-4 text-white">
+                People often call me the "Pokémon Whisperer" because of my unique ability to understand and connect with these amazing creatures. But I believe everyone has this gift; they just need the right opportunity.
+              </p>
+              <p className="mb-4 text-white">
+                Our center isn't just about adoption – it's about creating lasting bonds between trainers and Pokémon. Each adoption story adds another chapter to our growing family.
+              </p>
             </div>
             
-            {/* Trainer Message */}
-            <div className="md:w-2/3 p-6 md:p-8 flex flex-col">
-              <div className={`${isTyping ? 'typing-animation w-0' : 'w-full'}`}>
-                <h2 className="text-2xl font-bold mb-4 text-pokemon-blue">Hi, I'm Trainer Uddeshya!</h2>
-                <p className="mb-3">
-                  Welcome to the Hyathi Pokémon Adoption Center. We've rescued some lonely Pokémon 
-                  and they need loving trainers like you!
-                </p>
-                <p className="mb-3">
-                  I started this center after finding many Pokémon abandoned or lost in the wild. 
-                  Some of these amazing creatures have special talents - a few can even code! Can you believe it?
-                </p>
-                <p className="mb-3">
-                  Each Pokémon here has its own personality and needs. They require daily care 
-                  and feeding to stay healthy and happy.
-                </p>
-                <p className="mb-6">
-                  I'm counting on trainers like you to adopt, care for, and raise them to be
-                  strong and happy companions. Are you ready for this responsibility?
-                </p>
-              </div>
-              
-              {showButton && (
-                <Button 
+            {showButton && (
+              <div className="text-center mt-6">
+                <button 
                   onClick={onContinue}
-                  className="bg-pokemon-yellow text-black hover:bg-yellow-400 self-end mt-4 animate-fade-in"
+                  className="pixel-button"
                 >
-                  Enter Adoption Center
-                </Button>
-              )}
-            </div>
+                  CONTINUE
+                </button>
+              </div>
+            )}
           </div>
-        </CardContent>
-      </Card>
-      
-      <div className="mt-8 bg-pokemon-blue/10 p-6 rounded-lg border border-pokemon-blue/20 animate-text-appear" style={{ animationDelay: "1s" }}>
-        <h3 className="font-bold text-lg mb-2">The Hyathi Story</h3>
-        <p className="mb-2">
-          Trainer Uddeshya has rescued these Pokémon from the wild. They now need new homes.
-        </p>
-        <p>
-          He's counting on you to adopt, care, and raise them to be strong and happy!
-        </p>
+        </div>
       </div>
     </div>
   );
