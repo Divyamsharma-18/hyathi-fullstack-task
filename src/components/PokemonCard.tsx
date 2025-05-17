@@ -43,24 +43,33 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
     return 'bg-red-500';
   };
 
+  // Check if pokemon is rare based on rarity or isRare property
+  const isRare = pokemon.isRare || pokemon.rarity === 'rare' || pokemon.rarity === 'legendary';
+  
+  // Get image URL from either imageUrl or image property
+  const imageUrl = pokemon.imageUrl || pokemon.image;
+  
+  // Get adoption cost from either adoptionCost or price property
+  const adoptionCost = pokemon.adoptionCost || pokemon.price;
+
   return (
-    <Card className={`overflow-hidden shadow-lg transform transition-all hover:scale-105 ${pokemon.isRare ? 'card-rare' : 'card-normal'}`}>
+    <Card className={`overflow-hidden shadow-lg transform transition-all hover:scale-105 ${isRare ? 'card-rare' : 'card-normal'}`}>
       <CardHeader className="bg-pokemon-blue p-4">
         <div className="flex justify-between items-center">
           <CardTitle className="text-white font-bold">{pokemon.name}</CardTitle>
           <span className="bg-white text-xs font-semibold px-2 py-1 rounded-full text-pokemon-blue">
-            {pokemon.type}
+            {Array.isArray(pokemon.type) ? pokemon.type.join(', ') : pokemon.type}
           </span>
         </div>
       </CardHeader>
       
       <div className="relative">
         <img 
-          src={pokemon.imageUrl} 
+          src={imageUrl} 
           alt={pokemon.name}
           className="w-full h-48 object-contain bg-gray-100"
         />
-        {pokemon.isRare && (
+        {isRare && (
           <span className="absolute top-2 right-2 bg-pokemon-gold text-white text-xs font-bold px-2 py-1 rounded-full">
             RARE
           </span>
@@ -90,14 +99,14 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
           <>
             <div className="flex items-center">
               <Coins className="h-5 w-5 mr-1 text-pokemon-gold" />
-              <span>{pokemon.adoptionCost} coins</span>
+              <span>{adoptionCost} coins</span>
             </div>
             <Button 
               onClick={() => onAdopt && onAdopt(pokemon._id)}
-              disabled={userCoins < pokemon.adoptionCost || actionLoading || pokemon.isAdopted}
+              disabled={userCoins < adoptionCost || actionLoading || pokemon.isAdopted}
               className="bg-pokemon-blue hover:bg-blue-700"
             >
-              {userCoins < pokemon.adoptionCost ? 'Not enough coins' : 'Adopt'}
+              {userCoins < adoptionCost ? 'Not enough coins' : 'Adopt'}
             </Button>
           </>
         ) : (

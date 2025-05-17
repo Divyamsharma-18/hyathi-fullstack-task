@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -69,7 +68,8 @@ const AuthForms: React.FC<AuthFormsProps> = ({ isOpen, onClose, defaultTab = 'lo
     
     if (Object.keys(errors).length === 0) {
       try {
-        await login(loginForm.email, loginForm.password);
+        // Fix the login call - pass only the required credentials
+        await login({ email: loginForm.email, password: loginForm.password });
         onClose();
       } catch (error) {
         // Error is handled in the auth context
@@ -85,7 +85,8 @@ const AuthForms: React.FC<AuthFormsProps> = ({ isOpen, onClose, defaultTab = 'lo
     
     if (Object.keys(errors).length === 0) {
       try {
-        await register(registerForm.username, registerForm.email, registerForm.password);
+        // Fix the register call - pass only the required credentials
+        await register({ username: registerForm.username, email: registerForm.email, password: registerForm.password });
         onClose();
       } catch (error) {
         // Error is handled in the auth context

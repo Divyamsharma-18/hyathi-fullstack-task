@@ -4,6 +4,7 @@ export interface User {
   username: string;
   email: string;
   coins: number;
+  adoptedPokemons?: Pokemon[]; // Add the adoptedPokemons property
   lastFairyReward?: Date | string;
   lastTubaReward?: Date | string;
 }
@@ -11,7 +12,7 @@ export interface User {
 export interface Pokemon {
   _id: string;
   name: string;
-  type: string[];
+  type: string | string[];
   image: string;
   description: string;
   health: number;
@@ -20,6 +21,11 @@ export interface Pokemon {
   isAdopted: boolean;
   lastFed?: Date | string;
   adoptedBy?: string;
+  
+  // Add missing properties used in PokemonCard.tsx
+  isRare?: boolean;
+  imageUrl?: string;
+  adoptionCost?: number;
 }
 
 export interface LoginCredentials {
