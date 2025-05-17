@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { pokemonService, mockApiService } from '@/services/api';
@@ -29,8 +28,10 @@ const AdoptionCenter: React.FC = () => {
     const query = searchQuery.toLowerCase();
     return availablePokemons.filter(pokemon => 
       pokemon.name.toLowerCase().includes(query) || 
-      pokemon.breed.toLowerCase().includes(query) || 
-      pokemon.type.some(t => t.toLowerCase().includes(query))
+      pokemon.breed?.toLowerCase().includes(query) || 
+      (Array.isArray(pokemon.type) 
+        ? pokemon.type.some(t => t.toLowerCase().includes(query))
+        : pokemon.type.toLowerCase().includes(query))
     );
   }, [availablePokemons, searchQuery]);
 
