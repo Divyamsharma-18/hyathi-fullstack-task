@@ -94,7 +94,7 @@ export const mockApiService = {
         age: 2,
         type: ['Electric'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
-        description: 'When it is angered, it immediately discharges the energy stored in the pouches in its cheeks.',
+        description: "When it is angered, it immediately discharges the energy stored in the pouches in its cheeks.",
         health: 100,
         rarity: 'rare',
         price: 50,
@@ -341,13 +341,15 @@ export const mockApiService = {
   },
 
   feedPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; message: string }> => {
-    // Check if user has enough coins first (5 coins per feed)
+    // Mock the feeding process
+    // Check if user has enough coins first
     const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
-    if ((currentUser.coins || 0) < 5) {
-      throw new Error('Not enough coins to feed your Pokémon');
+    const feedingCost = 5; // 5 coins per feeding
+    
+    if ((currentUser.coins || 0) < feedingCost) {
+      throw new Error('Not enough coins to feed this Pokémon. Feeding costs 5 coins.');
     }
     
-    // Mock the feeding process
     const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
     const pokemonIndex = adoptedPokemons.findIndex((p: Pokemon) => p._id === pokemonId);
     
@@ -362,13 +364,13 @@ export const mockApiService = {
       lastFed: new Date()
     };
     
-    // Deduct 5 coins for feeding
+    // Update user coins
     const updatedUser = {
       ...currentUser,
-      coins: (currentUser.coins || 0) - 5
+      coins: (currentUser.coins || 0) - feedingCost
     };
     
-    // Save changes
+    // Update storage
     adoptedPokemons[pokemonIndex] = updatedPokemon;
     localStorage.setItem('adoptedPokemons', JSON.stringify(adoptedPokemons));
     localStorage.setItem('user', JSON.stringify(updatedUser));

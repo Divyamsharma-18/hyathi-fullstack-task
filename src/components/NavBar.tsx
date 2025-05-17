@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Coins } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Coins, VolumeX, Volume2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 interface NavBarProps {
@@ -10,6 +10,19 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onRegisterClick }) => {
   const { user, isAuthenticated, logout } = useAuth();
+  const [isMuted, setIsMuted] = useState(false);
+  
+  // Handle background music
+  useEffect(() => {
+    const bgMusic = document.getElementById('bgMusic') as HTMLAudioElement | null;
+    if (bgMusic) {
+      bgMusic.muted = isMuted;
+    }
+  }, [isMuted]);
+  
+  const toggleMute = () => {
+    setIsMuted(prev => !prev);
+  };
   
   return (
     <nav className="bg-[#0a1128] border-b border-blue-900 shadow-md">
@@ -34,12 +47,13 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onRegisterClick }) => {
                 </div>
                 
                 {/* Volume icon */}
-                <button className="text-white">
+                <button className="text-white hover:text-blue-300" onClick={toggleMute}>
                   <span className="sr-only">Toggle sound</span>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 5L6 9H2V15H6L11 19V5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M19.07 4.93C20.9447 6.80528 21.9979 9.34836 22 12C22 14.6522 20.9464 17.1957 19.07 19.07M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17 12C17 13.3316 16.4722 14.6044 15.54 15.54" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  {isMuted ? (
+                    <VolumeX size={18} />
+                  ) : (
+                    <Volume2 size={18} />
+                  )}
                 </button>
                 
                 {/* Username */}

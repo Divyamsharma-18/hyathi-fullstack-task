@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -101,18 +100,18 @@
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(2px 2px at 50px 200px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 100px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 150px 50px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 250px 350px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 350px 100px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 400px 200px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 450px 300px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 500px 100px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 550px 250px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 600px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 650px 350px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 700px 50px, white, rgba(0,0,0,0));
+    radial-gradient(3px 3px at 50px 200px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 100px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 150px 50px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 250px 350px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 350px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 400px 200px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 450px 300px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 500px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 550px 250px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 600px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 650px 350px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 700px 50px, white, rgba(0,0,0,0));
   background-repeat: repeat;
   background-size: 750px 750px;
   animation: twinkling 10s infinite linear;
@@ -129,17 +128,17 @@
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(2px 2px at 25px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 75px 100px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 175px 75px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 275px 300px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 325px 150px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 425px 225px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 475px 275px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 525px 75px, white, rgba(0,0,0,0)),
-    radial-gradient(3px 3px at 575px 225px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 625px 125px, white, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 675px 325px, white, rgba(0,0,0,0));
+    radial-gradient(3px 3px at 25px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 75px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 175px 75px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 275px 300px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 325px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 425px 225px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 475px 275px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 525px 75px, white, rgba(0,0,0,0)),
+    radial-gradient(4px 4px at 575px 225px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 625px 125px, white, rgba(0,0,0,0)),
+    radial-gradient(3px 3px at 675px 325px, white, rgba(0,0,0,0));
   background-repeat: repeat;
   background-size: 750px 750px;
   animation: twinkling 15s infinite linear;
@@ -171,7 +170,7 @@
     opacity: 0.3;
   }
   50% {
-    opacity: 0.8;
+    opacity: 1;
   }
   100% {
     opacity: 0.3;
@@ -327,12 +326,13 @@
 /* Star decoration for rare pokemon */
 .star-decoration {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
   color: #ffde00;
-  font-size: 16px;
-  text-shadow: 0 0 5px rgba(255, 222, 0, 0.7);
+  font-size: 18px;
+  text-shadow: 0 0 8px rgba(255, 222, 0, 0.7);
   animation: pulse 2s infinite ease-in-out;
+  z-index: 5;
 }
 
 @keyframes pulse {
@@ -375,4 +375,28 @@
   background-color: #102340;
   border: 1px solid #3b4cca;
   color: white;
+}
+
+/* Footer styles */
+.footer {
+  background-color: #0a1128;
+  border-top: 1px solid #3b4cca;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+.heart-icon {
+  animation: heartBeat 1.5s infinite ease-in-out;
+  color: #ff3e3e;
+  display: inline-block;
+  margin: 0 0.25rem;
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
 }

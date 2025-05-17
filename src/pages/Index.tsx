@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EntryScreen from '@/components/EntryScreen';
 import TrainerIntro from '@/components/TrainerIntro';
 import AdoptionCenter from '@/pages/AdoptionCenter';
 import NavBar from '@/components/NavBar';
 import AuthForms from '@/components/AuthForms';
+import Footer from '@/components/Footer';
 import { AuthProvider } from '@/context/AuthContext';
 
 enum AppState {
@@ -39,9 +40,33 @@ const Index: React.FC = () => {
     setShowAuthForms(false);
   };
 
+  // Add background music
+  useEffect(() => {
+    const audio = new Audio('/sounds/background-music.mp3');
+    audio.loop = true;
+    audio.volume = 0.3;
+    audio.id = 'bgMusic';
+    document.body.appendChild(audio);
+    
+    // Don't autoplay since browsers block it
+    // Instead we'll play it on first user interaction
+    const playMusic = () => {
+      audio.play().catch(err => console.error('Error playing background music:', err));
+      document.removeEventListener('click', playMusic);
+    };
+    
+    document.addEventListener('click', playMusic);
+    
+    return () => {
+      audio.pause();
+      audio.remove();
+      document.removeEventListener('click', playMusic);
+    };
+  }, []);
+
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gray-50">
         {appState === AppState.Entry && (
           <EntryScreen onEnter={() => handleProgressToState(AppState.TrainerIntro)} />
         )}
@@ -54,13 +79,16 @@ const Index: React.FC = () => {
         )}
         
         {appState === AppState.TrainerIntro && (
-          <div className="container mx-auto pt-8">
-            <TrainerIntro onContinue={() => handleProgressToState(AppState.AdoptionCenter)} />
-          </div>
+          <TrainerIntro onContinue={() => handleProgressToState(AppState.AdoptionCenter)} />
         )}
         
         {appState === AppState.AdoptionCenter && (
-          <AdoptionCenter />
+          <>
+            <div className="flex-grow">
+              <AdoptionCenter />
+            </div>
+            <Footer />
+          </>
         )}
         
         <AuthForms

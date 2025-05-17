@@ -1,14 +1,16 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { pokemonService, mockApiService } from '@/services/api';
 import { Pokemon } from '@/types/types';
 import { useToast } from '@/hooks/use-toast';
+import { Search } from 'lucide-react';
 import PokemonCard from '@/components/PokemonCard';
 import StatsCard from '@/components/StatsCard';
 import TubaFairy from '@/components/TubaFairy';
 import FairyTuba from '@/components/FairyTuba';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
 
 const AdoptionCenter: React.FC = () => {
   const { user, isAuthenticated, updateUser } = useAuth();
@@ -18,6 +20,41 @@ const AdoptionCenter: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("available");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter available Pokemon based on search query
+  const filteredPokemons = useMemo(() => {
+    if (!searchQuery.trim()) return availablePokemons;
+    
+    const query = searchQuery.toLowerCase();
+    return availablePokemons.filter(pokemon => 
+      pokemon.name.toLowerCase().includes(query) || 
+      pokemon.breed.toLowerCase().includes(query) || 
+      pokemon.type.some(t => t.toLowerCase().includes(query))
+    );
+  }, [availablePokemons, searchQuery]);
+
+  // Play sound effect function
+  const playPokemonSound = (pokemonId: string) => {
+    try {
+      // Different sounds for different Pokemon or use a generic one
+      const pokemonSounds: Record<string, string> = {
+        '1': '/sounds/pikachu.mp3',
+        '2': '/sounds/bulbasaur.mp3',
+        '3': '/sounds/charmander.mp3',
+        '4': '/sounds/squirtle.mp3',
+        '5': '/sounds/eevee.mp3',
+        'default': '/sounds/pokemon-general.mp3'
+      };
+      
+      const soundPath = pokemonSounds[pokemonId] || pokemonSounds.default;
+      const sound = new Audio(soundPath);
+      sound.volume = 0.5;
+      sound.play().catch(err => console.error('Error playing sound:', err));
+    } catch (error) {
+      console.error('Error playing Pokemon sound:', error);
+    }
+  };
 
   // Fetch pokemons
   useEffect(() => {
@@ -61,6 +98,9 @@ const AdoptionCenter: React.FC = () => {
       setActionLoading(true);
       const response = await mockApiService.adoptPokemon(pokemonId);
       
+      // Play Pokemon sound immediately on adoption
+      playPokemonSound(pokemonId);
+      
       // Update available pokemons
       setAvailablePokemons(prev => prev.map(p => 
         p._id === pokemonId ? { ...p, isAdopted: true } : p
@@ -93,6 +133,9 @@ const AdoptionCenter: React.FC = () => {
     try {
       setActionLoading(true);
       const response = await mockApiService.feedPokemon(pokemonId);
+      
+      // Play Pokemon sound on feeding
+      playPokemonSound(pokemonId);
       
       // Update the pokemon in the adopted list
       setAdoptedPokemons(prev => 
@@ -159,20 +202,44 @@ const AdoptionCenter: React.FC = () => {
           <div className="w-full">
             {activeTab === "available" && (
               <>
-                <h2 className="flex items-center justify-between mb-4">
-                  <span className="pokemon-font text-2xl text-white">Available for Adoption</span>
-                </h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="pokemon-font text-2xl text-white">Available for Adoption</h2>
+                  
+                  {/* Search bar */}
+                  <div className="relative w-full max-w-xs">
+                    <Input
+                      type="text"
+                      placeholder="Search by name, type..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 bg-blue-900/30 border-blue-700 text-white placeholder:text-blue-300/50"
+                    />
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-blue-300" />
+                  </div>
+                </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {availablePokemons.map(pokemon => (
-                    <PokemonCard 
-                      key={pokemon._id}
-                      pokemon={pokemon}
-                      onAdopt={handleAdoptPokemon}
-                      userCoins={user?.coins}
-                      actionLoading={actionLoading}
-                    />
-                  ))}
+                  {filteredPokemons.length > 0 ? (
+                    filteredPokemons.map(pokemon => (
+                      <PokemonCard 
+                        key={pokemon._id}
+                        pokemon={pokemon}
+                        onAdopt={handleAdoptPokemon}
+                        userCoins={user?.coins}
+                        actionLoading={actionLoading}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12">
+                      <p className="text-white text-xl mb-4">No Pokémon found matching your search</p>
+                      <button 
+                        className="pixel-button"
+                        onClick={() => setSearchQuery("")}
+                      >
+                        Clear Search
+                      </button>
+                    </div>
+                  )}
                 </div>
               </>
             )}
