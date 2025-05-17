@@ -83,13 +83,12 @@ const Index: React.FC = () => {
         )}
         
         {appState === AppState.AdoptionCenter && (
-          <>
-            <div className="flex-grow">
-              <AdoptionCenter />
-            </div>
-            <Footer />
-          </>
+          <div className="flex-grow">
+            <AdoptionCenter />
+          </div>
         )}
+        
+        {appState > AppState.Entry && <Footer />}
         
         <AuthForms
           isOpen={showAuthForms}
