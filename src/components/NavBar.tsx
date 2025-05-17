@@ -27,6 +27,12 @@ const NavBar: React.FC<NavBarProps> = ({ onLoginClick, onRegisterClick }) => {
           <div className="flex items-center gap-4">
             {isAuthenticated && user ? (
               <>
+                {/* Coins display */}
+                <div className="flex items-center gap-1 bg-pokemon-gold/20 px-3 py-1 rounded-full">
+                  <Coins size={16} className="text-pokemon-yellow" />
+                  <span className="text-pokemon-yellow pokemon-font text-xs">{user?.coins || 0}</span>
+                </div>
+                
                 {/* Volume icon */}
                 <button className="text-white">
                   <span className="sr-only">Toggle sound</span>

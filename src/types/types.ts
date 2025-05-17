@@ -22,10 +22,12 @@ export interface Pokemon {
   lastFed?: Date | string;
   adoptedBy?: string;
   
-  // Add missing properties used in PokemonCard.tsx
-  isRare?: boolean;
+  // Add these properties
+  breed?: string;
+  age?: number;
   imageUrl?: string;
   adoptionCost?: number;
+  isRare?: boolean;
 }
 
 export interface LoginCredentials {

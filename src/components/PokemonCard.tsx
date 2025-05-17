@@ -49,10 +49,29 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
   // Get adoption cost from either adoptionCost or price property
   const adoptionCost = pokemon.adoptionCost || pokemon.price;
 
+  // Random age between 1-5 years
+  const age = pokemon.age || Math.floor(Math.random() * 5) + 1;
+
+  // Generate breed from type if not provided
+  const breed = pokemon.breed || (Array.isArray(pokemon.type) ? pokemon.type[0] : pokemon.type);
+
   return (
-    <div className="pixel-card overflow-hidden transition-transform hover:scale-105">
-      {/* Pokemon Image */}
-      <div className="bg-[#1e3a64] aspect-square flex items-center justify-center p-2">
+    <div className={`pixel-card overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
+      isRare ? 'border-2 border-pokemon-gold' : ''
+    } ${
+      !isAdopted ? 'hover:border-blue-400 hover:shadow-blue-400/20' : 'hover:border-green-400 hover:shadow-green-400/20'
+    }`}>
+      {/* Pokemon Image Container */}
+      <div className={`relative bg-[#1e3a64] aspect-square flex items-center justify-center p-2 ${
+        isRare ? 'bg-gradient-to-br from-[#1e3a64] to-pokemon-gold/30' : ''
+      }`}>
+        {/* Adopted Badge */}
+        {pokemon.isAdopted && !isAdopted && (
+          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full z-10 pokemon-font">
+            Adopted
+          </div>
+        )}
+        
         <img 
           src={imageUrl} 
           alt={pokemon.name}
@@ -61,7 +80,9 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
       </div>
       
       {/* Pokemon Info */}
-      <div className="p-3 bg-[#102340] text-white">
+      <div className={`p-3 ${
+        isRare ? 'bg-gradient-to-br from-[#102340] to-pokemon-gold/20' : 'bg-[#102340]'
+      } text-white`}>
         <div className="flex justify-between items-center mb-2">
           <h3 className="pokemon-font text-sm">{pokemon.name}</h3>
           {isRare && (
@@ -69,8 +90,14 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
           )}
         </div>
         
-        <div className="flex justify-between text-xs mb-1">
-          <span>Type: {Array.isArray(pokemon.type) ? pokemon.type.join(', ') : pokemon.type}</span>
+        <div className="text-xs mb-1 flex justify-between">
+          <span>Breed:</span>
+          <span>{breed}</span>
+        </div>
+        
+        <div className="text-xs mb-1 flex justify-between">
+          <span>Age:</span>
+          <span>{age} {age === 1 ? 'year' : 'years'}</span>
         </div>
         
         <div className="flex justify-between text-xs mb-2">
@@ -90,10 +117,10 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
             onClick={() => onAdopt && onAdopt(pokemon._id)}
             disabled={userCoins < adoptionCost || actionLoading || pokemon.isAdopted}
             className={`w-full py-1 pokemon-font text-center text-xs ${
-              userCoins < adoptionCost ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-500'
+              userCoins < adoptionCost || pokemon.isAdopted ? 'bg-gray-600' : 'bg-blue-600 hover:bg-blue-500'
             }`}
           >
-            ADOPT ({adoptionCost} COINS)
+            {pokemon.isAdopted ? 'ADOPTED' : `ADOPT (${adoptionCost} COINS)`}
           </button>
         ) : (
           <button 

@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import { User, Pokemon, LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/types';
 
@@ -53,7 +54,7 @@ const updatePokemonHealth = () => {
 };
 
 // Real API service for production use
-export const pokemonService = {
+const realApiService = {
   getAllPokemons: async (): Promise<Pokemon[]> => {
     const response = await api.get('/pokemons');
     return response.data;
@@ -84,11 +85,13 @@ export const pokemonService = {
 // Mock API service for demo/dev purposes
 export const mockApiService = {
   getAllPokemons: async (): Promise<Pokemon[]> => {
-    // Return mock data for demo purposes
+    // Return mock data for demo purposes with more Pokémon
     return [
       {
         _id: '1',
         name: 'Pikachu',
+        breed: 'Electric Mouse',
+        age: 2,
         type: ['Electric'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
         description: 'When it is angered, it immediately discharges the energy stored in the pouches in its cheeks.',
@@ -100,9 +103,11 @@ export const mockApiService = {
       {
         _id: '2',
         name: 'Bulbasaur',
+        breed: 'Seed',
+        age: 1,
         type: ['Grass', 'Poison'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-        description: 'Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun’s rays, the seed grows progressively larger.',
+        description: 'Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun's rays, the seed grows progressively larger.',
         health: 120,
         rarity: 'common',
         price: 30,
@@ -111,6 +116,8 @@ export const mockApiService = {
       {
         _id: '3',
         name: 'Charmander',
+        breed: 'Lizard',
+        age: 1,
         type: ['Fire'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
         description: 'The flame that burns at the tip of its tail is an indication of its emotions. The flame wavers when Charmander is enjoying itself. If the Pokémon becomes enraged, the flame burns fiercely.',
@@ -122,9 +129,11 @@ export const mockApiService = {
       {
         _id: '4',
         name: 'Squirtle',
+        breed: 'Tiny Turtle',
+        age: 1,
         type: ['Water'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
-        description: 'Squirtle’s shell is not merely used for protection. The shell’s rounded shape and the grooves on its surface minimize resistance in water, enabling this Pokémon to swim at high speeds.',
+        description: 'Squirtle's shell is not merely used for protection. The shell's rounded shape and the grooves on its surface minimize resistance in water, enabling this Pokémon to swim at high speeds.',
         health: 90,
         rarity: 'common',
         price: 30,
@@ -133,6 +142,8 @@ export const mockApiService = {
       {
         _id: '5',
         name: 'Eevee',
+        breed: 'Evolution',
+        age: 2,
         type: ['Normal'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png',
         description: 'Eevee has an unstable genetic code that allows it to evolve into multiple forms. It is popular as a pet due to its friendly nature.',
@@ -144,17 +155,21 @@ export const mockApiService = {
       {
         _id: '6',
         name: 'Snorlax',
+        breed: 'Sleeping',
+        age: 5,
         type: ['Normal'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
         description: 'Snorlax is a very lazy Pokémon. Unless it is eating, it is constantly asleep. It is not picky about what it eats—even moldy food will do.',
         health: 200,
-        rarity: 'rare',
+        rarity: 'common',
         price: 70,
         isAdopted: false
       },
       {
         _id: '7',
         name: 'Gengar',
+        breed: 'Shadow',
+        age: 4,
         type: ['Ghost', 'Poison'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png',
         description: 'Sometimes, on a dark night, your shadow thrown by a streetlight will suddenly overtake you and race off into the darkness. It is actually a Gengar running by pretending to be your shadow.',
@@ -166,9 +181,11 @@ export const mockApiService = {
       {
         _id: '8',
         name: 'Mewtwo',
+        breed: 'Genetic',
+        age: 3,
         type: ['Psychic'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png',
-        description: 'Mewtwo is a Pokémon that was created by genetic manipulation. However, even though the scientific power of humans created this Pokémon’s body, they failed to endow Mewtwo with a compassionate heart.',
+        description: 'Mewtwo is a Pokémon that was created by genetic manipulation. However, even though the scientific power of humans created this Pokémon's body, they failed to endow Mewtwo with a compassionate heart.',
         health: 150,
         rarity: 'legendary',
         price: 100,
@@ -177,6 +194,8 @@ export const mockApiService = {
       {
         _id: '9',
         name: 'Articuno',
+        breed: 'Freeze',
+        age: 5,
         type: ['Ice', 'Flying'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/144.png',
         description: 'Articuno is a large, avian Pokémon with predominantly blue plumage. It has a head crest of long, blue feathers and a gray, mask-like marking around its eyes.',
@@ -188,6 +207,8 @@ export const mockApiService = {
       {
         _id: '10',
         name: 'Zapdos',
+        breed: 'Electric',
+        age: 5,
         type: ['Electric', 'Flying'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/145.png',
         description: 'Zapdos is an avian Pokémon with predominantly yellow plumage. Black tips appear on its wings and tail feathers. It has a long, thin, light orange beak and black eyes.',
@@ -199,12 +220,66 @@ export const mockApiService = {
       {
         _id: '11',
         name: 'Moltres',
+        breed: 'Flame',
+        age: 5,
         type: ['Fire', 'Flying'],
         image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/146.png',
         description: 'Moltres is a large, avian Pokémon with orange plumage. It has a long, flowing head crest and tail composed of flames. Its beak is long and thin, and its eyes are surrounded by a black marking.',
         health: 130,
         rarity: 'legendary',
         price: 90,
+        isAdopted: false
+      },
+      {
+        _id: '12',
+        name: 'Jigglypuff',
+        breed: 'Balloon',
+        age: 1,
+        type: ['Normal', 'Fairy'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png',
+        description: 'Jigglypuff's vocal cords can freely adjust the wavelength of its voice. This Pokémon uses this ability to sing at precisely the right wavelength to make its foes most drowsy.',
+        health: 95,
+        rarity: 'common',
+        price: 25,
+        isAdopted: false
+      },
+      {
+        _id: '13',
+        name: 'Psyduck',
+        breed: 'Duck',
+        age: 2,
+        type: ['Water'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png',
+        description: 'Psyduck is constantly beset by headaches. If the Pokémon lets its strange power erupt, apparently the pain subsides for a while.',
+        health: 85,
+        rarity: 'common',
+        price: 30,
+        isAdopted: false
+      },
+      {
+        _id: '14',
+        name: 'Machop',
+        breed: 'Superpower',
+        age: 3,
+        type: ['Fighting'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png',
+        description: 'Machop exercises by hefting around a Graveler as if it were a barbell. There are some Machop that travel the world in a quest to master all kinds of martial arts.',
+        health: 110,
+        rarity: 'common',
+        price: 35,
+        isAdopted: false
+      },
+      {
+        _id: '15',
+        name: 'Growlithe',
+        breed: 'Puppy',
+        age: 1,
+        type: ['Fire'],
+        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/58.png',
+        description: 'Growlithe has a superb sense of smell. Once it smells anything, this Pokémon won't forget the scent, no matter what. It uses its advanced olfactory sense to determine the emotions of other living things.',
+        health: 90,
+        rarity: 'common',
+        price: 30,
         isAdopted: false
       }
     ];
@@ -229,6 +304,10 @@ export const mockApiService = {
       throw new Error('Not enough coins');
     }
     
+    if (pokemon.isAdopted) {
+      throw new Error('This Pokémon has already been adopted');
+    }
+    
     // Update the pokemon
     const adoptedPokemon = { 
       ...pokemon, 
@@ -250,6 +329,13 @@ export const mockApiService = {
     // Add to adopted pokemons
     const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
     localStorage.setItem('adoptedPokemons', JSON.stringify([...adoptedPokemons, adoptedPokemon]));
+    
+    // Mark this pokemon as adopted in the available list too
+    const availablePokemons = JSON.parse(localStorage.getItem('availablePokemons') || JSON.stringify(allPokemons));
+    const updatedAvailablePokemons = availablePokemons.map((p: Pokemon) => 
+      p._id === pokemonId ? { ...p, isAdopted: true } : p
+    );
+    localStorage.setItem('availablePokemons', JSON.stringify(updatedAvailablePokemons));
     
     return { pokemon: adoptedPokemon, user: updatedUser as User };
   },
@@ -383,4 +469,6 @@ export const mockApiService = {
   }
 };
 
-export { pokemonService };
+// Export the appropriate service based on environment
+// For now, we're using the mock service
+export const pokemonService = mockApiService;

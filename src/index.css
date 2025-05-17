@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,12 +86,76 @@
 
 .night-sky {
   background-color: #0a1128;
+  background-image: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Create stars */
+.night-sky::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: 
-    radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-    radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-    radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
-  background-size: 550px 550px, 350px 350px, 250px 250px;
-  background-position: 0 0, 40px 60px, 130px 270px;
+    radial-gradient(1px 1px at 50px 200px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 100px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 150px 50px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 250px 350px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 350px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 400px 200px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 450px 300px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 500px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 550px 250px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 600px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 650px 350px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 700px 50px, white, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 750px 750px;
+  animation: twinkling 10s infinite linear;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Second set of stars with different animation timing */
+.night-sky::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(1px 1px at 25px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 75px 100px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 175px 75px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 275px 300px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 325px 150px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 425px 225px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 475px 275px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 525px 75px, white, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 575px 225px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 625px 125px, white, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 675px 325px, white, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 750px 750px;
+  animation: twinkling 15s infinite linear;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes twinkling {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.3;
+  }
 }
 
 .pokemon-font {
@@ -152,76 +215,38 @@
   margin-left: -20px;
 }
 
-/* Star Animation */
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background-color: white;
-  border-radius: 50%;
-}
-
-/* Firefly Animation */
-.firefly {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background-color: rgba(255, 255, 100, 0.7);
-  border-radius: 50%;
-  box-shadow: 0 0 5px 2px rgba(255, 255, 100, 0.3);
-}
-
-/* Card types */
-.card-normal {
-  @apply border-pokemon-normal bg-gradient-to-br from-gray-100 to-gray-300;
-}
-
-.card-rare {
-  @apply border-pokemon-gold bg-gradient-to-br from-yellow-200 to-yellow-400;
-  border-width: 2px;
-  box-shadow: 0 0 15px rgba(182, 158, 49, 0.5);
-}
-
-.typing-animation {
-  overflow: hidden;
-  border-right: .15em solid;
-  white-space: nowrap;
-  margin: 0 auto;
-  letter-spacing: .15em;
-  animation: 
-    typing 3.5s steps(40, end),
-    blink-caret .75s step-end infinite;
-}
-
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
-}
-
-@keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: currentColor; }
-}
-
-/* Pixelated UI Classes */
-.pixel-container {
-  background-color: #0a1128;
-  color: white;
-  min-height: 100vh;
-}
-
-.pixel-text {
-  font-family: 'Press Start 2P', cursive;
-  color: #78c4ff;
-  text-shadow: 2px 2px 0 #235789;
-  letter-spacing: 1px;
-}
-
+/* Card Hover Effects */
 .pixel-card {
   background-color: #1a2b47;
   border: 2px solid #3b4cca;
   border-radius: 4px;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 1;
+}
+
+.pixel-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px -5px rgba(59, 76, 202, 0.4);
+  border-color: rgba(59, 76, 202, 0.8);
+}
+
+.pixel-card:before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.pixel-card:hover:before {
+  opacity: 1;
 }
 
 .pixel-button {
