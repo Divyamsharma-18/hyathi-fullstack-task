@@ -8,7 +8,6 @@ import PokemonCard from '@/components/PokemonCard';
 import StatsCard from '@/components/StatsCard';
 import TubaFairy from '@/components/TubaFairy';
 import FairyTuba from '@/components/FairyTuba';
-import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 
@@ -35,28 +34,6 @@ const AdoptionCenter: React.FC = () => {
         : pokemon.type.toLowerCase().includes(query))
     );
   }, [availablePokemons, searchQuery]);
-
-  // Play sound effect function
-  const playPokemonSound = (pokemonId: string) => {
-    try {
-      // Different sounds for different Pokemon or use a generic one
-      const pokemonSounds: Record<string, string> = {
-        '1': '/sounds/pikachu.mp3',
-        '2': '/sounds/bulbasaur.mp3',
-        '3': '/sounds/charmander.mp3',
-        '4': '/sounds/squirtle.mp3',
-        '5': '/sounds/eevee.mp3',
-        'default': '/sounds/pokemon-general.mp3'
-      };
-      
-      const soundPath = pokemonSounds[pokemonId] || pokemonSounds.default;
-      const sound = new Audio(soundPath);
-      sound.volume = 0.5;
-      sound.play().catch(err => console.error('Error playing sound:', err));
-    } catch (error) {
-      console.error('Error playing Pokemon sound:', error);
-    }
-  };
 
   // Fetch pokemons
   useEffect(() => {
@@ -100,9 +77,6 @@ const AdoptionCenter: React.FC = () => {
       setActionLoading(true);
       const response = await mockApiService.adoptPokemon(pokemonId);
       
-      // Play Pokemon sound immediately on adoption
-      playPokemonSound(pokemonId);
-      
       // Update available pokemons
       setAvailablePokemons(prev => prev.map(p => 
         p._id === pokemonId ? { ...p, isAdopted: true } : p
@@ -135,9 +109,6 @@ const AdoptionCenter: React.FC = () => {
     try {
       setActionLoading(true);
       const response = await mockApiService.feedPokemon(pokemonId);
-      
-      // Play Pokemon sound on feeding
-      playPokemonSound(pokemonId);
       
       // Update the pokemon in the adopted list
       setAdoptedPokemons(prev => 
@@ -284,7 +255,6 @@ const AdoptionCenter: React.FC = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

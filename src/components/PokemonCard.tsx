@@ -93,8 +93,10 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
     }
     
     if (onAdopt && !pokemon.isAdopted && userCoins >= adoptionCost && !actionLoading) {
-      onAdopt(pokemon._id);
+      // Play sound immediately when button is clicked
       playPokemonCry();
+      // Then call the adopt function
+      onAdopt(pokemon._id);
     }
   };
 
@@ -110,8 +112,10 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
     }
     
     if (onFeed && pokemon.health < 100 && !actionLoading) {
-      onFeed(pokemon._id);
+      // Play sound immediately when button is clicked
       playPokemonCry();
+      // Then call the feed function
+      onFeed(pokemon._id);
     }
   };
 
