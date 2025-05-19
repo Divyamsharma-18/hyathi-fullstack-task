@@ -89,7 +89,7 @@ export const mockApiService = {
     
     if (!availablePokemons) {
       // Return mock data for demo purposes with more Pokémon
-      const defaultPokemons = [
+      const defaultPokemons: Pokemon[] = [
         {
           _id: '1',
           name: 'Pikachu',
