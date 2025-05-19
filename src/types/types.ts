@@ -4,7 +4,7 @@ export interface User {
   username: string;
   email: string;
   coins: number;
-  adoptedPokemons?: Pokemon[]; // Add the adoptedPokemons property
+  adoptedPokemons?: Pokemon[]; 
   lastFairyReward?: Date | string;
   lastTubaReward?: Date | string;
 }

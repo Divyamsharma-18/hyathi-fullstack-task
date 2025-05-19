@@ -69,11 +69,13 @@ const AuthForms: React.FC<AuthFormsProps> = ({ isOpen, onClose, defaultTab = 'lo
     
     if (Object.keys(errors).length === 0) {
       try {
-        // Fix the login call - pass only the required credentials
+        // Clear any previous forms after successful login
         await login({ email: loginForm.email, password: loginForm.password });
+        setLoginForm({ email: '', password: '' });
         onClose();
       } catch (error) {
         // Error is handled in the auth context
+        console.error('Login error:', error);
       }
     }
   };
@@ -86,11 +88,17 @@ const AuthForms: React.FC<AuthFormsProps> = ({ isOpen, onClose, defaultTab = 'lo
     
     if (Object.keys(errors).length === 0) {
       try {
-        // Fix the register call - pass only the required credentials
-        await register({ username: registerForm.username, email: registerForm.email, password: registerForm.password });
+        // Clear form after successful registration
+        await register({ 
+          username: registerForm.username, 
+          email: registerForm.email, 
+          password: registerForm.password 
+        });
+        setRegisterForm({ username: '', email: '', password: '', confirmPassword: '' });
         onClose();
       } catch (error) {
         // Error is handled in the auth context
+        console.error('Registration error:', error);
       }
     }
   };

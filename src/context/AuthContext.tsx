@@ -25,9 +25,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const checkAuth = async () => {
       try {
         const currentUser = await mockApiService.getCurrentUser();
-        setUser(currentUser);
+        if (currentUser) {
+          // If we have a user, also fetch their adopted Pokémon
+          const adoptedPokemons = await mockApiService.getUserPokemons();
+          // Update the user with their adopted Pokémon
+          if (currentUser && adoptedPokemons.length > 0) {
+            setUser({
+              ...currentUser,
+              adoptedPokemons
+            });
+          } else {
+            setUser(currentUser);
+          }
+        }
       } catch (error) {
         console.error('Auth check failed:', error);
+        // Clear any invalid session data
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
       } finally {
         setIsLoading(false);
       }
@@ -40,7 +55,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       setIsLoading(true);
       const response = await mockApiService.login(credentials);
-      setUser(response.user);
+      
+      // After successful login, get user's Pokémon
+      const adoptedPokemons = await mockApiService.getUserPokemons();
+      
+      // Set the user with their Pokémon
+      const updatedUser = {
+        ...response.user,
+        adoptedPokemons
+      };
+      
+      setUser(updatedUser);
+      
       toast({
         title: "Welcome back!",
         description: `Logged in as ${response.user.username}`,
@@ -61,7 +87,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       setIsLoading(true);
       const response = await mockApiService.register(credentials);
-      setUser(response.user);
+      
+      // New users start with no Pokémon
+      setUser({
+        ...response.user,
+        adoptedPokemons: []
+      });
+      
       toast({
         title: "Registration successful!",
         description: `Welcome, ${response.user.username}!`,

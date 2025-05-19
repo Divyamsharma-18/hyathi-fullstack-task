@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import { User, Pokemon, LoginCredentials, RegisterCredentials, AuthResponse } from '@/types/types';
 
@@ -82,217 +81,274 @@ const realApiService = {
   }
 };
 
-// Mock API service for demo/dev purposes
+// Enhanced mock API service for better user data persistence
 export const mockApiService = {
   getAllPokemons: async (): Promise<Pokemon[]> => {
-    // Return mock data for demo purposes with more Pokémon
-    return [
-      {
-        _id: '1',
-        name: 'Pikachu',
-        breed: 'Electric Mouse',
-        age: 2,
-        type: ['Electric'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
-        description: "When it is angered, it immediately discharges the energy stored in the pouches in its cheeks.",
-        health: 100,
-        rarity: 'rare',
-        price: 50,
-        isAdopted: false
-      },
-      {
-        _id: '2',
-        name: 'Bulbasaur',
-        breed: 'Seed',
-        age: 1,
-        type: ['Grass', 'Poison'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
-        description: "Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun's rays, the seed grows progressively larger.",
-        health: 120,
-        rarity: 'common',
-        price: 30,
-        isAdopted: false
-      },
-      {
-        _id: '3',
-        name: 'Charmander',
-        breed: 'Lizard',
-        age: 1,
-        type: ['Fire'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
-        description: "The flame that burns at the tip of its tail is an indication of its emotions. The flame wavers when Charmander is enjoying itself. If the Pokémon becomes enraged, the flame burns fiercely.",
-        health: 80,
-        rarity: 'common',
-        price: 30,
-        isAdopted: false
-      },
-      {
-        _id: '4',
-        name: 'Squirtle',
-        breed: 'Tiny Turtle',
-        age: 1,
-        type: ['Water'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
-        description: "Squirtle's shell is not merely used for protection. The shell's rounded shape and the grooves on its surface minimize resistance in water, enabling this Pokémon to swim at high speeds.",
-        health: 90,
-        rarity: 'common',
-        price: 30,
-        isAdopted: false
-      },
-      {
-        _id: '5',
-        name: 'Eevee',
-        breed: 'Evolution',
-        age: 2,
-        type: ['Normal'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png',
-        description: 'Eevee has an unstable genetic code that allows it to evolve into multiple forms. It is popular as a pet due to its friendly nature.',
-        health: 110,
-        rarity: 'rare',
-        price: 50,
-        isAdopted: false
-      },
-      {
-        _id: '6',
-        name: 'Snorlax',
-        breed: 'Sleeping',
-        age: 5,
-        type: ['Normal'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
-        description: 'Snorlax is a very lazy Pokémon. Unless it is eating, it is constantly asleep. It is not picky about what it eats—even moldy food will do.',
-        health: 200,
-        rarity: 'common',
-        price: 70,
-        isAdopted: false
-      },
-      {
-        _id: '7',
-        name: 'Gengar',
-        breed: 'Shadow',
-        age: 4,
-        type: ['Ghost', 'Poison'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png',
-        description: 'Sometimes, on a dark night, your shadow thrown by a streetlight will suddenly overtake you and race off into the darkness. It is actually a Gengar running by pretending to be your shadow.',
-        health: 95,
-        rarity: 'rare',
-        price: 60,
-        isAdopted: false
-      },
-      {
-        _id: '8',
-        name: 'Mewtwo',
-        breed: 'Genetic',
-        age: 3,
-        type: ['Psychic'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png',
-        description: "Mewtwo is a Pokémon that was created by genetic manipulation. However, even though the scientific power of humans created this Pokémon's body, they failed to endow Mewtwo with a compassionate heart.",
-        health: 150,
-        rarity: 'legendary',
-        price: 100,
-        isAdopted: false
-      },
-      {
-        _id: '9',
-        name: 'Articuno',
-        breed: 'Freeze',
-        age: 5,
-        type: ['Ice', 'Flying'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/144.png',
-        description: 'Articuno is a large, avian Pokémon with predominantly blue plumage. It has a head crest of long, blue feathers and a gray, mask-like marking around its eyes.',
-        health: 130,
-        rarity: 'legendary',
-        price: 90,
-        isAdopted: false
-      },
-      {
-        _id: '10',
-        name: 'Zapdos',
-        breed: 'Electric',
-        age: 5,
-        type: ['Electric', 'Flying'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/145.png',
-        description: 'Zapdos is an avian Pokémon with predominantly yellow plumage. Black tips appear on its wings and tail feathers. It has a long, thin, light orange beak and black eyes.',
-        health: 130,
-        rarity: 'legendary',
-        price: 90,
-        isAdopted: false
-      },
-      {
-        _id: '11',
-        name: 'Moltres',
-        breed: 'Flame',
-        age: 5,
-        type: ['Fire', 'Flying'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/146.png',
-        description: 'Moltres is a large, avian Pokémon with orange plumage. It has a long, flowing head crest and tail composed of flames. Its beak is long and thin, and its eyes are surrounded by a black marking.',
-        health: 130,
-        rarity: 'legendary',
-        price: 90,
-        isAdopted: false
-      },
-      {
-        _id: '12',
-        name: 'Jigglypuff',
-        breed: 'Balloon',
-        age: 1,
-        type: ['Normal', 'Fairy'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png',
-        description: "Jigglypuff's vocal cords can freely adjust the wavelength of its voice. This Pokémon uses this ability to sing at precisely the right wavelength to make its foes most drowsy.",
-        health: 95,
-        rarity: 'common',
-        price: 25,
-        isAdopted: false
-      },
-      {
-        _id: '13',
-        name: 'Psyduck',
-        breed: 'Duck',
-        age: 2,
-        type: ['Water'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png',
-        description: 'Psyduck is constantly beset by headaches. If the Pokémon lets its strange power erupt, apparently the pain subsides for a while.',
-        health: 85,
-        rarity: 'common',
-        price: 30,
-        isAdopted: false
-      },
-      {
-        _id: '14',
-        name: 'Machop',
-        breed: 'Superpower',
-        age: 3,
-        type: ['Fighting'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png',
-        description: 'Machop exercises by hefting around a Graveler as if it were a barbell. There are some Machop that travel the world in a quest to master all kinds of martial arts.',
-        health: 110,
-        rarity: 'common',
-        price: 35,
-        isAdopted: false
-      },
-      {
-        _id: '15',
-        name: 'Growlithe',
-        breed: 'Puppy',
-        age: 1,
-        type: ['Fire'],
-        image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/58.png',
-        description: "Growlithe has a superb sense of smell. Once it smells anything, this Pokémon won't forget the scent, no matter what. It uses its advanced olfactory sense to determine the emotions of other living things.",
-        health: 90,
-        rarity: 'common',
-        price: 30,
-        isAdopted: false
-      }
-    ];
+    // Get available Pokémon from localStorage or use the default list
+    let availablePokemons = localStorage.getItem('availablePokemons');
+    
+    if (!availablePokemons) {
+      // Return mock data for demo purposes with more Pokémon
+      const defaultPokemons = [
+        {
+          _id: '1',
+          name: 'Pikachu',
+          breed: 'Electric Mouse',
+          age: 2,
+          type: ['Electric'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png',
+          description: "When it is angered, it immediately discharges the energy stored in the pouches in its cheeks.",
+          health: 100,
+          rarity: 'rare',
+          price: 50,
+          isAdopted: false
+        },
+        {
+          _id: '2',
+          name: 'Bulbasaur',
+          breed: 'Seed',
+          age: 1,
+          type: ['Grass', 'Poison'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png',
+          description: "Bulbasaur can be seen napping in bright sunlight. There is a seed on its back. By soaking up the sun's rays, the seed grows progressively larger.",
+          health: 120,
+          rarity: 'common',
+          price: 30,
+          isAdopted: false
+        },
+        {
+          _id: '3',
+          name: 'Charmander',
+          breed: 'Lizard',
+          age: 1,
+          type: ['Fire'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png',
+          description: "The flame that burns at the tip of its tail is an indication of its emotions. The flame wavers when Charmander is enjoying itself. If the Pokémon becomes enraged, the flame burns fiercely.",
+          health: 80,
+          rarity: 'common',
+          price: 30,
+          isAdopted: false
+        },
+        {
+          _id: '4',
+          name: 'Squirtle',
+          breed: 'Tiny Turtle',
+          age: 1,
+          type: ['Water'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png',
+          description: "Squirtle's shell is not merely used for protection. The shell's rounded shape and the grooves on its surface minimize resistance in water, enabling this Pokémon to swim at high speeds.",
+          health: 90,
+          rarity: 'common',
+          price: 30,
+          isAdopted: false
+        },
+        {
+          _id: '5',
+          name: 'Eevee',
+          breed: 'Evolution',
+          age: 2,
+          type: ['Normal'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png',
+          description: 'Eevee has an unstable genetic code that allows it to evolve into multiple forms. It is popular as a pet due to its friendly nature.',
+          health: 110,
+          rarity: 'rare',
+          price: 50,
+          isAdopted: false
+        },
+        {
+          _id: '6',
+          name: 'Snorlax',
+          breed: 'Sleeping',
+          age: 5,
+          type: ['Normal'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
+          description: 'Snorlax is a very lazy Pokémon. Unless it is eating, it is constantly asleep. It is not picky about what it eats—even moldy food will do.',
+          health: 200,
+          rarity: 'common',
+          price: 70,
+          isAdopted: false
+        },
+        {
+          _id: '7',
+          name: 'Gengar',
+          breed: 'Shadow',
+          age: 4,
+          type: ['Ghost', 'Poison'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png',
+          description: 'Sometimes, on a dark night, your shadow thrown by a streetlight will suddenly overtake you and race off into the darkness. It is actually a Gengar running by pretending to be your shadow.',
+          health: 95,
+          rarity: 'rare',
+          price: 60,
+          isAdopted: false
+        },
+        {
+          _id: '8',
+          name: 'Mewtwo',
+          breed: 'Genetic',
+          age: 3,
+          type: ['Psychic'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png',
+          description: "Mewtwo is a Pokémon that was created by genetic manipulation. However, even though the scientific power of humans created this Pokémon's body, they failed to endow Mewtwo with a compassionate heart.",
+          health: 150,
+          rarity: 'legendary',
+          price: 100,
+          isAdopted: false
+        },
+        {
+          _id: '9',
+          name: 'Articuno',
+          breed: 'Freeze',
+          age: 5,
+          type: ['Ice', 'Flying'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/144.png',
+          description: 'Articuno is a large, avian Pokémon with predominantly blue plumage. It has a head crest of long, blue feathers and a gray, mask-like marking around its eyes.',
+          health: 130,
+          rarity: 'legendary',
+          price: 90,
+          isAdopted: false
+        },
+        {
+          _id: '10',
+          name: 'Zapdos',
+          breed: 'Electric',
+          age: 5,
+          type: ['Electric', 'Flying'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/145.png',
+          description: 'Zapdos is an avian Pokémon with predominantly yellow plumage. Black tips appear on its wings and tail feathers. It has a long, thin, light orange beak and black eyes.',
+          health: 130,
+          rarity: 'legendary',
+          price: 90,
+          isAdopted: false
+        },
+        {
+          _id: '11',
+          name: 'Moltres',
+          breed: 'Flame',
+          age: 5,
+          type: ['Fire', 'Flying'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/146.png',
+          description: 'Moltres is a large, avian Pokémon with orange plumage. It has a long, flowing head crest and tail composed of flames. Its beak is long and thin, and its eyes are surrounded by a black marking.',
+          health: 130,
+          rarity: 'legendary',
+          price: 90,
+          isAdopted: false
+        },
+        {
+          _id: '12',
+          name: 'Jigglypuff',
+          breed: 'Balloon',
+          age: 1,
+          type: ['Normal', 'Fairy'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/39.png',
+          description: "Jigglypuff's vocal cords can freely adjust the wavelength of its voice. This Pokémon uses this ability to sing at precisely the right wavelength to make its foes most drowsy.",
+          health: 95,
+          rarity: 'common',
+          price: 25,
+          isAdopted: false
+        },
+        {
+          _id: '13',
+          name: 'Psyduck',
+          breed: 'Duck',
+          age: 2,
+          type: ['Water'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/54.png',
+          description: 'Psyduck is constantly beset by headaches. If the Pokémon lets its strange power erupt, apparently the pain subsides for a while.',
+          health: 85,
+          rarity: 'common',
+          price: 30,
+          isAdopted: false
+        },
+        {
+          _id: '14',
+          name: 'Machop',
+          breed: 'Superpower',
+          age: 3,
+          type: ['Fighting'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png',
+          description: 'Machop exercises by hefting around a Graveler as if it were a barbell. There are some Machop that travel the world in a quest to master all kinds of martial arts.',
+          health: 110,
+          rarity: 'common',
+          price: 35,
+          isAdopted: false
+        },
+        {
+          _id: '15',
+          name: 'Growlithe',
+          breed: 'Puppy',
+          age: 1,
+          type: ['Fire'],
+          image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/58.png',
+          description: "Growlithe has a superb sense of smell. Once it smells anything, this Pokémon won't forget the scent, no matter what. It uses its advanced olfactory sense to determine the emotions of other living things.",
+          health: 90,
+          rarity: 'common',
+          price: 30,
+          isAdopted: false
+        }
+      ];
+      
+      // Save to localStorage for future use
+      localStorage.setItem('availablePokemons', JSON.stringify(defaultPokemons));
+      return defaultPokemons;
+    }
+    
+    return JSON.parse(availablePokemons);
   },
 
   getUserPokemons: async (): Promise<Pokemon[]> => {
-    // Return mock data for the current user's adopted Pokemon
-    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
-    return adoptedPokemons;
+    // Get current user
+    const userString = localStorage.getItem('user');
+    if (!userString) return [];
+    
+    const user = JSON.parse(userString);
+    
+    // Get adopted Pokémon for this specific user
+    const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    const userPokemons = allAdoptedPokemons.filter((pokemon: Pokemon) => 
+      pokemon.adoptedBy === user._id
+    );
+    
+    // Update health based on last fed time
+    const now = new Date();
+    const updatedPokemons = userPokemons.map((pokemon: Pokemon) => {
+      if (!pokemon.lastFed) return pokemon;
+      
+      const lastFed = new Date(pokemon.lastFed);
+      const hoursSinceLastFed = (now.getTime() - lastFed.getTime()) / (1000 * 60 * 60);
+      
+      // If not fed in the last 24 hours, decrease health
+      if (hoursSinceLastFed >= 24) {
+        const healthDecrease = Math.floor(hoursSinceLastFed / 24) * 10;
+        return {
+          ...pokemon,
+          health: Math.max(1, pokemon.health - healthDecrease) 
+        };
+      }
+      
+      return pokemon;
+    });
+    
+    // Update the localStorage with the latest health values
+    const allUpdatedPokemons = allAdoptedPokemons.map((pokemon: Pokemon) => {
+      const updatedPokemon = updatedPokemons.find(p => p._id === pokemon._id);
+      return updatedPokemon || pokemon;
+    });
+    
+    localStorage.setItem('adoptedPokemons', JSON.stringify(allUpdatedPokemons));
+    
+    return updatedPokemons;
   },
 
   adoptPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; user: User }> => {
-    // Mock the adoption process
+    // Get current user
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      throw new Error('User not logged in');
+    }
+    
+    const currentUser: User = JSON.parse(userString);
+    
+    // Get available Pokémon
     const allPokemons = await mockApiService.getAllPokemons();
     const pokemon = allPokemons.find(p => p._id === pokemonId);
     
@@ -300,7 +356,7 @@ export const mockApiService = {
       throw new Error('Pokemon not found');
     }
     
-    if (pokemon.price > (JSON.parse(localStorage.getItem('user') || '{"coins":0}').coins || 0)) {
+    if (pokemon.price > currentUser.coins) {
       throw new Error('Not enough coins');
     }
     
@@ -312,67 +368,84 @@ export const mockApiService = {
     const adoptedPokemon = { 
       ...pokemon, 
       isAdopted: true, 
-      lastFed: new Date(),
-      adoptedBy: 'currentUser'
+      lastFed: new Date().toISOString(),
+      adoptedBy: currentUser._id
     };
     
-    // Update user
-    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    // Update user coins
     const updatedUser = { 
       ...currentUser, 
-      coins: (currentUser.coins || 0) - pokemon.price 
+      coins: currentUser.coins - pokemon.price
     };
     
-    // Save to localStorage for persistence
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    
-    // Add to adopted pokemons
+    // Get current adopted Pokémon list and add new one
     const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
-    localStorage.setItem('adoptedPokemons', JSON.stringify([...adoptedPokemons, adoptedPokemon]));
+    const updatedAdoptedPokemons = [...adoptedPokemons, adoptedPokemon];
+    
+    // Update the user's adoptedPokemons array as well
+    const userAdoptedPokemons = updatedUser.adoptedPokemons || [];
+    updatedUser.adoptedPokemons = [...userAdoptedPokemons, adoptedPokemon];
+    
+    // Save to localStorage
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    localStorage.setItem('adoptedPokemons', JSON.stringify(updatedAdoptedPokemons));
     
     // Mark this pokemon as adopted in the available list too
-    const availablePokemons = JSON.parse(localStorage.getItem('availablePokemons') || JSON.stringify(allPokemons));
-    const updatedAvailablePokemons = availablePokemons.map((p: Pokemon) => 
+    const updatedAvailablePokemons = allPokemons.map((p: Pokemon) => 
       p._id === pokemonId ? { ...p, isAdopted: true } : p
     );
     localStorage.setItem('availablePokemons', JSON.stringify(updatedAvailablePokemons));
     
-    return { pokemon: adoptedPokemon, user: updatedUser as User };
+    return { pokemon: adoptedPokemon, user: updatedUser };
   },
 
   feedPokemon: async (pokemonId: string): Promise<{ pokemon: Pokemon; message: string }> => {
-    // Mock the feeding process
-    // Check if user has enough coins first
-    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    // Get current user
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      throw new Error('User not logged in');
+    }
+    
+    const currentUser: User = JSON.parse(userString);
     const feedingCost = 5; // 5 coins per feeding
     
-    if ((currentUser.coins || 0) < feedingCost) {
+    if (currentUser.coins < feedingCost) {
       throw new Error('Not enough coins to feed this Pokémon. Feeding costs 5 coins.');
     }
     
-    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
-    const pokemonIndex = adoptedPokemons.findIndex((p: Pokemon) => p._id === pokemonId);
+    // Get all adopted Pokémon
+    const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    const pokemonIndex = allAdoptedPokemons.findIndex((p: Pokemon) => 
+      p._id === pokemonId && p.adoptedBy === currentUser._id
+    );
     
     if (pokemonIndex === -1) {
-      throw new Error('Pokemon not found');
+      throw new Error('Pokemon not found or not owned by you');
     }
     
     // Update Pokemon health and lastFed
     const updatedPokemon = {
-      ...adoptedPokemons[pokemonIndex],
-      health: Math.min(100, adoptedPokemons[pokemonIndex].health + 20),
-      lastFed: new Date()
+      ...allAdoptedPokemons[pokemonIndex],
+      health: Math.min(100, allAdoptedPokemons[pokemonIndex].health + 20),
+      lastFed: new Date().toISOString()
     };
     
     // Update user coins
     const updatedUser = {
       ...currentUser,
-      coins: (currentUser.coins || 0) - feedingCost
+      coins: currentUser.coins - feedingCost
     };
     
-    // Update storage
-    adoptedPokemons[pokemonIndex] = updatedPokemon;
-    localStorage.setItem('adoptedPokemons', JSON.stringify(adoptedPokemons));
+    // Update the user's adoptedPokemons list too
+    if (updatedUser.adoptedPokemons) {
+      updatedUser.adoptedPokemons = updatedUser.adoptedPokemons.map((p: Pokemon) =>
+        p._id === pokemonId ? updatedPokemon : p
+      );
+    }
+    
+    // Update in storage
+    allAdoptedPokemons[pokemonIndex] = updatedPokemon;
+    localStorage.setItem('adoptedPokemons', JSON.stringify(allAdoptedPokemons));
     localStorage.setItem('user', JSON.stringify(updatedUser));
     
     return { 
@@ -382,13 +455,18 @@ export const mockApiService = {
   },
 
   collectFairyReward: async (): Promise<{ user: User; message: string }> => {
-    // Mock the fairy reward process
-    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    // Get current user
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      throw new Error('User not logged in');
+    }
+    
+    const currentUser: User = JSON.parse(userString);
     
     // Update user with coins and timestamp
     const updatedUser = {
       ...currentUser,
-      coins: (currentUser.coins || 0) + 1, // Add 1 coin
+      coins: currentUser.coins + 1,
       lastFairyReward: new Date().toISOString()
     };
     
@@ -396,14 +474,19 @@ export const mockApiService = {
     localStorage.setItem('user', JSON.stringify(updatedUser));
     
     return {
-      user: updatedUser as User,
+      user: updatedUser,
       message: "You received 1 coin from Fairy Tuba!"
     };
   },
 
   collectTubaReward: async (): Promise<{ user: User; message: string }> => {
-    // Mock the tuba reward process
-    const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+    // Get current user
+    const userString = localStorage.getItem('user');
+    if (!userString) {
+      throw new Error('User not logged in');
+    }
+    
+    const currentUser: User = JSON.parse(userString);
     
     // Check if 10 hours have passed since last collection
     const lastReward = currentUser.lastTubaReward ? new Date(currentUser.lastTubaReward) : null;
@@ -416,7 +499,7 @@ export const mockApiService = {
     // Update user with coins and timestamp
     const updatedUser = {
       ...currentUser,
-      coins: (currentUser.coins || 0) + 5, // Add 5 coins
+      coins: currentUser.coins + 5,
       lastTubaReward: new Date().toISOString()
     };
     
@@ -424,25 +507,55 @@ export const mockApiService = {
     localStorage.setItem('user', JSON.stringify(updatedUser));
     
     return {
-      user: updatedUser as User,
+      user: updatedUser,
       message: "You received 5 coins from Fairy Tuba!"
     };
   },
 
-  // Auth methods
+  // Enhanced Auth methods with user data persistence
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    // In a real app, this would validate against a backend
+    // Get registered users from localStorage
+    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    
+    // Find user with matching credentials
+    const user = registeredUsers.find((u: User & { password: string }) => 
+      u.email === credentials.email && u.password === credentials.password
+    );
+    
+    if (user) {
+      // Remove password before storing in state
+      const { password, ...safeUser } = user;
+      
+      // Retrieve user's adopted Pokémon
+      const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+      const userPokemons = allAdoptedPokemons.filter((p: Pokemon) => p.adoptedBy === safeUser._id);
+      
+      const fullUser = {
+        ...safeUser,
+        adoptedPokemons: userPokemons
+      };
+      
+      const token = 'mock-jwt-token-' + Date.now();
+      
+      // Store user data in localStorage
+      localStorage.setItem('user', JSON.stringify(fullUser));
+      localStorage.setItem('token', token);
+      
+      return { user: fullUser as User, token };
+    }
+    
+    // Demo user for testing
     if (credentials.email === 'user@example.com' && credentials.password === 'password') {
       const user: User = {
         _id: '12345',
         username: 'DemoUser',
         email: credentials.email,
-        coins: 100
+        coins: 100,
+        adoptedPokemons: []
       };
       
-      const token = 'mock-jwt-token';
+      const token = 'mock-jwt-token-demo';
       
-      // Store in localStorage
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', token);
       
@@ -453,27 +566,44 @@ export const mockApiService = {
   },
   
   register: async (credentials: RegisterCredentials): Promise<AuthResponse> => {
-    // Mock registration
-    const user: User = {
-      _id: Math.random().toString(36).substring(7),
+    // Get existing users
+    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    
+    // Check if user already exists
+    const userExists = registeredUsers.some((u: User) => u.email === credentials.email);
+    if (userExists) {
+      throw new Error('User with this email already exists');
+    }
+    
+    // Create new user
+    const newUser = {
+      _id: Date.now().toString(),
       username: credentials.username,
       email: credentials.email,
-      coins: 100
+      password: credentials.password, // In a real app, this would be hashed
+      coins: 100,
+      adoptedPokemons: []
     };
     
-    const token = 'mock-jwt-token';
+    // Add to registered users
+    registeredUsers.push(newUser);
+    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
     
-    // Store in localStorage
-    localStorage.setItem('user', JSON.stringify(user));
+    // Remove password for state/response
+    const { password, ...safeUser } = newUser;
+    
+    const token = 'mock-jwt-token-' + Date.now();
+    
+    // Store user in localStorage
+    localStorage.setItem('user', JSON.stringify(safeUser));
     localStorage.setItem('token', token);
     
-    return { user, token };
+    return { user: safeUser as User, token };
   },
   
   logout: async (): Promise<void> => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    localStorage.removeItem('adoptedPokemons');
     return;
   },
   
@@ -481,10 +611,15 @@ export const mockApiService = {
     const userString = localStorage.getItem('user');
     if (!userString) return null;
     
-    return JSON.parse(userString) as User;
+    const user = JSON.parse(userString);
+    
+    // Check if token exists (user is logged in)
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    
+    return user as User;
   }
 };
 
 // Export the appropriate service based on environment
-// For now, we're using the mock service
 export const pokemonService = mockApiService;
