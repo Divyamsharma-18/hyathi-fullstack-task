@@ -66,7 +66,7 @@ const PokemonCard: React.FC<PokemonCardProps> = ({
     let baseClass = 'pixel-card hover:shadow-lg transition-shadow duration-300';
     if (isLegendary) return `${baseClass} legendary-pokemon hover:shadow-pokemon-gold/50`;
     if (isRare) return `${baseClass} rare-pokemon hover:shadow-pokemon-gold/30`;
-    return baseClass;
+    return `${baseClass} normal-pokemon hover:shadow-blue-500/30`; // Add blue shadow to normal cards
   };
 
   // Function to play pokemon cry

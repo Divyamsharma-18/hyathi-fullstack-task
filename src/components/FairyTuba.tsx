@@ -86,7 +86,7 @@ const FairyTuba: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col items-center">
       <div 
         className={`relative cursor-pointer w-16 h-16 rounded-full overflow-hidden border-4 ${
           canCollect ? 'border-purple-400 animate-pulse' : 'border-gray-300'
@@ -94,7 +94,7 @@ const FairyTuba: React.FC = () => {
         onClick={handleOpenDialog}
       >
         <img 
-          src="https://i.ibb.co/2WNz3XF/fairy-tuba.png" 
+          src="/fairy.png" 
           alt="Fairy Tuba"
           className="w-full h-full object-cover"
         />
@@ -104,6 +104,7 @@ const FairyTuba: React.FC = () => {
           </div>
         )}
       </div>
+      <span className="text-xs text-center mt-1 text-blue-300 pokemon-font">Fairy Tuba</span>
 
       <FairyTubaDialog
         isOpen={isDialogOpen}
@@ -111,7 +112,7 @@ const FairyTuba: React.FC = () => {
         onCollect={handleCollectReward}
         canCollect={canCollect}
       />
-    </>
+    </div>
   );
 };
 

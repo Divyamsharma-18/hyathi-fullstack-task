@@ -28,15 +28,8 @@ const TrainerIntro: React.FC<TrainerIntroProps> = ({ onContinue }) => {
     }
   }, [visibleLines, dialogLines.length]);
   
-  // Auto-continue after showing all lines
-  useEffect(() => {
-    if (allLinesShown) {
-      const timer = setTimeout(() => {
-        onContinue();
-      }, 3000); // Move to next screen after 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [allLinesShown, onContinue]);
+  // Remove auto-continue after showing all lines
+  // We'll now rely on the button click only
 
   return (
     <div className="night-sky min-h-screen flex flex-col items-center justify-center py-12 relative px-4">
@@ -65,17 +58,18 @@ const TrainerIntro: React.FC<TrainerIntroProps> = ({ onContinue }) => {
               ))}
             </div>
             
-            {/* Continue Button */}
-            {allLinesShown && (
-              <div className="mt-6 flex justify-end">
-                <button 
-                  onClick={onContinue}
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md transition-colors uppercase"
-                >
-                  Continue
-                </button>
-              </div>
-            )}
+            {/* Continue Button - Always visible but only enabled when all content is shown */}
+            <div className="mt-6 flex justify-end">
+              <button 
+                onClick={onContinue}
+                disabled={!allLinesShown}
+                className={`bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md transition-colors uppercase ${
+                  !allLinesShown ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </div>
       </div>
