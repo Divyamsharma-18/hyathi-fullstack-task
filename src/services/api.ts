@@ -84,6 +84,11 @@ const realApiService = {
 // Enhanced mock API service for better user data persistence
 export const mockApiService = {
   getAllPokemons: async (): Promise<Pokemon[]> => {
+    // Get current user
+    const userString = localStorage.getItem('user');
+    const currentUser = userString ? JSON.parse(userString) : null;
+    const userId = currentUser ? currentUser._id : '';
+    
     // Get available Pokémon from localStorage or use the default list
     let availablePokemons = localStorage.getItem('availablePokemons');
     
@@ -292,7 +297,17 @@ export const mockApiService = {
       return defaultPokemons;
     }
     
-    return JSON.parse(availablePokemons);
+    // Get all adopted Pokémon to mark which ones are adopted
+    const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    const adoptedIds = new Set(allAdoptedPokemons.map((p: Pokemon) => p._id));
+    
+    // Parse available Pokémon and update their adoption status
+    const parsedPokemons: Pokemon[] = JSON.parse(availablePokemons);
+    return parsedPokemons.map(pokemon => ({
+      ...pokemon,
+      // Only show as adopted if it's in the adopted list (regardless of user)
+      isAdopted: adoptedIds.has(pokemon._id)
+    }));
   },
 
   getUserPokemons: async (): Promise<Pokemon[]> => {
@@ -329,12 +344,14 @@ export const mockApiService = {
     });
     
     // Update the localStorage with the latest health values
-    const allUpdatedPokemons = allAdoptedPokemons.map((pokemon: Pokemon) => {
-      const updatedPokemon = updatedPokemons.find(p => p._id === pokemon._id);
-      return updatedPokemon || pokemon;
-    });
-    
-    localStorage.setItem('adoptedPokemons', JSON.stringify(allUpdatedPokemons));
+    if (updatedPokemons.length > 0) {
+      const allUpdatedPokemons = allAdoptedPokemons.map((pokemon: Pokemon) => {
+        const updatedPokemon = updatedPokemons.find(p => p._id === pokemon._id);
+        return updatedPokemon || pokemon;
+      });
+      
+      localStorage.setItem('adoptedPokemons', JSON.stringify(allUpdatedPokemons));
+    }
     
     return updatedPokemons;
   },
@@ -526,7 +543,7 @@ export const mockApiService = {
       // Remove password before storing in state
       const { password, ...safeUser } = user;
       
-      // Retrieve user's adopted Pokémon
+      // Retrieve user's adopted Pokémon - only those adopted by this user
       const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
       const userPokemons = allAdoptedPokemons.filter((p: Pokemon) => p.adoptedBy === safeUser._id);
       
@@ -546,20 +563,36 @@ export const mockApiService = {
     
     // Demo user for testing
     if (credentials.email === 'user@example.com' && credentials.password === 'password') {
+      const demoId = '12345';
+      
+      // Check if this demo user already exists in our system (they might have coins/pokemon already)
+      const existingDemoUser = JSON.parse(localStorage.getItem('demoUser') || 'null');
+      const userCoins = existingDemoUser ? existingDemoUser.coins : 100;
+      
       const user: User = {
-        _id: '12345',
+        _id: demoId,
         username: 'DemoUser',
         email: credentials.email,
-        coins: 100,
+        coins: userCoins,
         adoptedPokemons: []
+      };
+      
+      // Retrieve user's adopted Pokémon - only those adopted by this user
+      const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+      const userPokemons = allAdoptedPokemons.filter((p: Pokemon) => p.adoptedBy === demoId);
+      
+      const fullUser = {
+        ...user,
+        adoptedPokemons: userPokemons
       };
       
       const token = 'mock-jwt-token-demo';
       
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('user', JSON.stringify(fullUser));
       localStorage.setItem('token', token);
+      localStorage.setItem('demoUser', JSON.stringify(fullUser)); // Store special record for demo user
       
-      return { user, token };
+      return { user: fullUser, token };
     }
     
     throw new Error('Invalid email or password');

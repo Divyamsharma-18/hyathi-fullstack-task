@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { pokemonService, mockApiService } from '@/services/api';
@@ -44,9 +45,11 @@ const AdoptionCenter: React.FC = () => {
         const pokemons = await mockApiService.getAllPokemons();
         setAvailablePokemons(pokemons);
         
-        if (isAuthenticated) {
+        if (isAuthenticated && user) {
           const userPokemons = await mockApiService.getUserPokemons();
           setAdoptedPokemons(userPokemons);
+        } else {
+          setAdoptedPokemons([]);
         }
       } catch (error) {
         console.error('Failed to fetch pokemons:', error);
@@ -61,7 +64,7 @@ const AdoptionCenter: React.FC = () => {
     };
 
     fetchPokemons();
-  }, [isAuthenticated, toast]);
+  }, [isAuthenticated, user, toast]);
 
   const handleAdoptPokemon = async (pokemonId: string) => {
     if (!isAuthenticated) {
