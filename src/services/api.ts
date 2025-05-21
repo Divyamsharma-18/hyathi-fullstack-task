@@ -565,9 +565,15 @@ export const mockApiService = {
     if (credentials.email === 'user@example.com' && credentials.password === 'password') {
       const demoId = '12345';
       
-      // Check if this demo user already exists in our system (they might have coins/pokemon already)
+      // Check if this demo user already exists in our system
       const existingDemoUser = JSON.parse(localStorage.getItem('demoUser') || 'null');
+      
+      // Important fix: Only set coins to 100 for brand new users, otherwise use existing balance
       const userCoins = existingDemoUser ? existingDemoUser.coins : 100;
+      
+      // Retrieve user's adopted Pokémon - only those adopted by this user
+      const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+      const userPokemons = allAdoptedPokemons.filter((p: Pokemon) => p.adoptedBy === demoId);
       
       const user: User = {
         _id: demoId,
@@ -576,10 +582,6 @@ export const mockApiService = {
         coins: userCoins,
         adoptedPokemons: []
       };
-      
-      // Retrieve user's adopted Pokémon - only those adopted by this user
-      const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
-      const userPokemons = allAdoptedPokemons.filter((p: Pokemon) => p.adoptedBy === demoId);
       
       const fullUser = {
         ...user,
