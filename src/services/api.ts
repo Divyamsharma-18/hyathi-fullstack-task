@@ -3,8 +3,23 @@ import { User, Pokemon, LoginCredentials, RegisterCredentials, AuthResponse } fr
 
 // Create an axios instance
 const api = axios.create({
-  baseURL: 'https://api.example.com/v1', // Replace with your actual API URL
+  baseURL: 'http://localhost:5000', 
 });
+
+// Immediately check if backend is available
+const checkBackendAvailability = async () => {
+  try {
+    await api.get('/ping'); 
+    useFallback = false;
+    console.log('✅ Backend available. Using BE data.');
+  } catch (error) {
+    useFallback = true;
+    console.warn('⚠️ Backend unavailable. Using frontend-only data.');
+  }
+};
+
+checkBackendAvailability();
+
 
 // Set JWT token for auth requests
 api.interceptors.request.use(
