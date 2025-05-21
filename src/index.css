@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
   :root {
     --background: 210 40% 96.1%;
@@ -74,6 +75,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Source Sans Pro', sans-serif;
+    min-width: 320px; /* Set minimum width to prevent distortion */
+    overflow-x: hidden; /* Prevent horizontal scroll on small screens */
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -81,8 +84,7 @@
   }
 }
 
-/* Import pixelated font */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 
 .night-sky {
   background-color: #0a1128;
@@ -178,20 +180,21 @@
 }
 
 .pokemon-font {
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Comic Sans MS';
   letter-spacing: 1px;
 }
 
 .pixelated-heading {
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Comic Sans MS';
   color: #78c4ff;
   text-shadow: 2px 2px 0 #235789;
   letter-spacing: 1px;
   line-height: 1.5;
+  word-wrap: break-word; /* Improve text wrapping on small screens */
 }
 
 .pixelated-btn {
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Comic Sans MS';
   background-color: #ff3e3e;
   border: 4px solid #ffffff;
   color: white;
@@ -216,7 +219,7 @@
   position: relative;
   background: #ffffff;
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 1rem; /* Smaller padding on mobile */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
@@ -227,11 +230,19 @@
   top: 50%;
   width: 0;
   height: 0;
-  border: 20px solid transparent;
+  border: 16px solid transparent; /* Smaller on mobile */
   border-right-color: #ffffff;
   border-left: 0;
-  margin-top: -20px;
-  margin-left: -20px;
+  margin-top: -16px;
+  margin-left: -16px;
+}
+
+@media (min-width: 480px) {
+  .speech-bubble:after {
+    border-width: 20px;
+    margin-top: -20px;
+    margin-left: -20px;
+  }
 }
 
 /* Improved Card Hover Effects with shadows */
@@ -299,15 +310,24 @@
 }
 
 .pixel-button {
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Comic Sans MS';
   background-color: #ff3e3e;
-  border: 4px solid #ffffff;
+  border: 3px solid #ffffff;
   color: white;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 0 #b50000, 0 8px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 0 #b50000, 0 6px 10px rgba(0, 0, 0, 0.3);
   transition: all 0.2s;
+  font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .pixel-button {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    border-width: 4px;
+  }
 }
 
 .pixel-button:hover {
@@ -321,12 +341,27 @@
 }
 
 .trainer-avatar {
-  width: 120px;
-  height: 120px;
+  width: 60px;   /* Smaller on mobile */
+  height: 60px;
   border-radius: 50%;
-  border: 3px solid #3b4cca;
+  border: 2px solid #3b4cca;
   overflow: hidden;
   background-color: #1a2b47;
+}
+
+@media (min-width: 480px) {
+  .trainer-avatar {
+    width: 80px;
+    height: 80px;
+    border-width: 3px;
+  }
+}
+
+@media (min-width: 640px) {
+  .trainer-avatar {
+    width: 120px;
+    height: 120px;
+  }
 }
 
 /* Star decoration for rare pokemon */
@@ -359,13 +394,21 @@
   left: 8px;
   background-color: #ff3e3e;
   color: white;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 12px;
+  font-size: 8px;
+  padding: 2px 4px;
+  border-radius: 10px;
   z-index: 10;
-  font-family: 'Press Start 2P', cursive;
+  font-family: 'Comic Sans MS';
   transform: rotate(-10deg);
   box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+@media (min-width: 640px) {
+  .adopted-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 12px;
+  }
 }
 
 /* Form styling to match theme */
@@ -374,6 +417,23 @@
   border: 2px solid #3b4cca;
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 0.75rem;  /* Smaller padding on mobile */
+  width: 100%;
+  max-width: 95%;    /* Use more screen space on mobile */
+}
+
+@media (min-width: 480px) {
+  .auth-form {
+    max-width: 90%;
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .auth-form {
+    max-width: 450px;
+    padding: 1.5rem;
+  }
 }
 
 /* Input styling to match theme */
@@ -381,6 +441,9 @@
   background-color: #102340;
   border: 1px solid #3b4cca;
   color: white;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
 }
 
 /* Footer styles */
@@ -401,5 +464,29 @@
 @keyframes heartBeat {
   0%, 100% {
     transform: scale(1);
+  }
+}
+
+/* Responsive utility classes */
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.xs\:grid-cols-2 {
+  @media (min-width: 480px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Fix for small screens */
+@media (max-width: 479px) {
+  .pokemon-font {
+    font-size: 90%; /* Slightly reduce font size on tiny screens */
+    letter-spacing: 0.5px;
+  }
+  
+  .adopted-badge {
+    font-size: 7px;
+    padding: 1px 3px;
   }
 }

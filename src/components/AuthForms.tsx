@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,7 +18,11 @@ const AuthForms: React.FC<AuthFormsProps> = ({ isOpen, onClose, defaultTab = 'lo
   const [registerForm, setRegisterForm] = useState({ username: '', email: '', password: '', confirmPassword: '' });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   
+  // Make sure we're getting the auth context correctly
   const { login, register, isLoading } = useAuth();
+  
+  // Debug to check if register function exists
+  console.log("Register function exists:", !!register);
 
   const validateLoginForm = () => {
     const errors: Record<string, string> = {};
@@ -88,6 +91,7 @@ const AuthForms: React.FC<AuthFormsProps> = ({ isOpen, onClose, defaultTab = 'lo
     
     if (Object.keys(errors).length === 0) {
       try {
+        console.log("Attempting to register with:", register);
         // Clear form after successful registration
         await register({ 
           username: registerForm.username, 

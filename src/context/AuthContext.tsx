@@ -27,15 +27,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const currentUser = await mockApiService.getCurrentUser();
         if (currentUser) {
           // If we have a user, also fetch their adopted Pokémon
+          // No need to update the user here as getUserPokemons will handle filtering
           const adoptedPokemons = await mockApiService.getUserPokemons();
-          // Update the user with their adopted Pokémon
-          if (currentUser && adoptedPokemons.length > 0) {
+          
+          // Update the user with their adopted Pokémon (if any)
+          if (currentUser) {
             setUser({
               ...currentUser,
-              adoptedPokemons
+              adoptedPokemons: adoptedPokemons || []
             });
-          } else {
-            setUser(currentUser);
           }
         }
       } catch (error) {
@@ -56,7 +56,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(true);
       const response = await mockApiService.login(credentials);
       
-      // After successful login, get user's Pokémon
+      // After successful login, get user's Pokémon - these are already filtered by user ID
       const adoptedPokemons = await mockApiService.getUserPokemons();
       
       // Set the user with their Pokémon
@@ -151,4 +151,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// This is the important part - making sure we export the useAuth hook correctly
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

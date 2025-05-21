@@ -297,17 +297,33 @@ export const mockApiService = {
       return defaultPokemons;
     }
     
-    // Get all adopted Pokémon to mark which ones are adopted
+    // Get all adopted Pokémon
     const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
-    const adoptedIds = new Set(allAdoptedPokemons.map((p: Pokemon) => p._id));
     
-    // Parse available Pokémon and update their adoption status
+    // Parse available Pokémon
     const parsedPokemons: Pokemon[] = JSON.parse(availablePokemons);
-    return parsedPokemons.map(pokemon => ({
-      ...pokemon,
-      // Only show as adopted if it's in the adopted list (regardless of user)
-      isAdopted: adoptedIds.has(pokemon._id)
-    }));
+    
+    // For non-authenticated users, just show all Pokémon as available
+    if (!userId) {
+      return parsedPokemons.map(pokemon => ({
+        ...pokemon,
+        isAdopted: false // Show all as available for non-authenticated users
+      }));
+    } 
+    
+    // For authenticated users, mark Pokémon as adopted only if they adopted it themselves
+    return parsedPokemons.map(pokemon => {
+      // Find if this Pokémon is adopted by the current user
+      const isAdoptedByCurrentUser = allAdoptedPokemons.some(
+        (p: Pokemon) => p._id === pokemon._id && p.adoptedBy === userId
+      );
+      
+      // Mark as adopted only if adopted by the current user
+      return {
+        ...pokemon,
+        isAdopted: isAdoptedByCurrentUser
+      };
+    });
   },
 
   getUserPokemons: async (): Promise<Pokemon[]> => {
@@ -317,11 +333,22 @@ export const mockApiService = {
     
     const user = JSON.parse(userString);
     
-    // Get adopted Pokémon for this specific user
+    // Get adopted Pokémon for this specific user only
     const allAdoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
-    const userPokemons = allAdoptedPokemons.filter((pokemon: Pokemon) => 
-      pokemon.adoptedBy === user._id
-    );
+    
+    // Filter to only show Pokémon adopted by the current user
+    // Use a Set to track unique Pokémon IDs to prevent duplicates
+    const seenPokemonIds = new Set<string>();
+    const userPokemons = allAdoptedPokemons
+      .filter((pokemon: Pokemon) => pokemon.adoptedBy === user._id)
+      .filter((pokemon: Pokemon) => {
+        // Only include each Pokémon once based on its ID
+        if (seenPokemonIds.has(pokemon._id)) {
+          return false;
+        }
+        seenPokemonIds.add(pokemon._id);
+        return true;
+      });
     
     // Update health based on last fed time
     const now = new Date();
@@ -344,13 +371,28 @@ export const mockApiService = {
     });
     
     // Update the localStorage with the latest health values
-    if (updatedPokemons.length > 0) {
-      const allUpdatedPokemons = allAdoptedPokemons.map((pokemon: Pokemon) => {
-        const updatedPokemon = updatedPokemons.find(p => p._id === pokemon._id);
-        return updatedPokemon || pokemon;
+    // Also deduplicate the storage while we're at it
+    if (userPokemons.length > 0) {
+      // Create a map of unique Pokémon by ID
+      const uniquePokemonMap = new Map<string, Pokemon>();
+      
+      allAdoptedPokemons.forEach((pokemon: Pokemon) => {
+        // For the current user's Pokémon, use the updated versions
+        if (pokemon.adoptedBy === user._id) {
+          const updatedPokemon = updatedPokemons.find(p => p._id === pokemon._id);
+          if (updatedPokemon && !uniquePokemonMap.has(pokemon._id)) {
+            uniquePokemonMap.set(pokemon._id, updatedPokemon);
+          }
+        } 
+        // For other users' Pokémon, keep them as is
+        else if (!uniquePokemonMap.has(pokemon._id)) {
+          uniquePokemonMap.set(pokemon._id, pokemon);
+        }
       });
       
-      localStorage.setItem('adoptedPokemons', JSON.stringify(allUpdatedPokemons));
+      // Convert the map back to an array and update localStorage
+      const deduplicatedPokemons = Array.from(uniquePokemonMap.values());
+      localStorage.setItem('adoptedPokemons', JSON.stringify(deduplicatedPokemons));
     }
     
     return updatedPokemons;
@@ -377,6 +419,16 @@ export const mockApiService = {
       throw new Error('Not enough coins');
     }
     
+    // Get current adopted Pokémon list to check if this user already adopted this Pokémon
+    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    const alreadyAdopted = adoptedPokemons.some((p: Pokemon) => 
+      p._id === pokemonId && p.adoptedBy === currentUser._id
+    );
+    
+    if (alreadyAdopted) {
+      throw new Error('You have already adopted this Pokémon');
+    }
+    
     if (pokemon.isAdopted) {
       throw new Error('This Pokémon has already been adopted');
     }
@@ -395,13 +447,17 @@ export const mockApiService = {
       coins: currentUser.coins - pokemon.price
     };
     
-    // Get current adopted Pokémon list and add new one
-    const adoptedPokemons = JSON.parse(localStorage.getItem('adoptedPokemons') || '[]');
+    // Add new Pokémon to the adopted list
     const updatedAdoptedPokemons = [...adoptedPokemons, adoptedPokemon];
     
     // Update the user's adoptedPokemons array as well
+    // Make sure we're not duplicating Pokémon in the user object
     const userAdoptedPokemons = updatedUser.adoptedPokemons || [];
-    updatedUser.adoptedPokemons = [...userAdoptedPokemons, adoptedPokemon];
+    const pokemonNotYetAdopted = !userAdoptedPokemons.some(p => p._id === adoptedPokemon._id);
+    
+    if (pokemonNotYetAdopted) {
+      updatedUser.adoptedPokemons = [...userAdoptedPokemons, adoptedPokemon];
+    }
     
     // Save to localStorage
     localStorage.setItem('user', JSON.stringify(updatedUser));

@@ -27,16 +27,16 @@ const EntryScreen: React.FC<EntryScreenProps> = ({ onEnter }) => {
   }, [onEnter]);
 
   return (
-    <div className="night-sky flex flex-col items-center justify-center min-h-screen w-full">
+ <div className="night-sky flex flex-col items-center justify-center min-h-screen w-full p-4">
       <div 
         className={`text-center transition-opacity duration-1000 ${
           fadeOut ? 'opacity-0' : 'opacity-100'
         }`}
       >
-        <h1 className="pixelated-heading text-3xl sm:text-4xl md:text-5xl mb-6">
+        <h1 className="pixelated-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-4 md:mb-6 px-4">
           Welcome to Hyathi's
         </h1>
-        <h2 className="pixelated-heading text-2xl sm:text-3xl md:text-4xl">
+        <h2 className="pixelated-heading text-xl sm:text-2xl md:text-3xl lg:text-4xl px-4">
           Pokémon Adoption Center
         </h2>
       </div>

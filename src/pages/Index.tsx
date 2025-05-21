@@ -66,7 +66,7 @@ const Index: React.FC = () => {
 
   return (
     <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className="min-h-screen flex flex-col bg-gray-50 overflow-x-hidden min-w-[320px]">
         {appState === AppState.Entry && (
           <EntryScreen onEnter={() => handleProgressToState(AppState.TrainerIntro)} />
         )}

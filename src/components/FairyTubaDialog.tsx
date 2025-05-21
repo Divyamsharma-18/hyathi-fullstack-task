@@ -31,37 +31,38 @@ const FairyTubaDialog: React.FC<FairyTubaDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-purple-50 border-2 border-purple-300 max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="text-purple-700 text-xl">Fairy Tuba</DialogTitle>
-        </DialogHeader>
+      <DialogContent className="bg-purple-50 border-2 border-purple-300 max-w-[90vw] sm:max-w-md w-full">
+  <DialogHeader>
+    <DialogTitle className="text-purple-700 text-xl sm:text-2xl">Fairy Tuba</DialogTitle>
+  </DialogHeader>
 
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
-            <img
-              src="https://i.ibb.co/2WNz3XF/fairy-tuba.png"
-              alt="Fairy Tuba"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <DialogDescription className="text-purple-600">
-            {canCollect
-              ? "Hi, I'm fairy Tuba! Here are your coins. Do visit after every hour to get more coins, byeee!"
-              : "Hi, I'm fairy Tuba! I don't have any coins for you right now. Please come back later when I've gathered more, byeee!"}
-          </DialogDescription>
-        </div>
+  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
+      <img
+        src="fairy.png"
+        alt="Fairy Tuba"
+        className="w-full h-full object-cover"
+      />
+    </div>
+    <DialogDescription className="text-purple-600 text-sm sm:text-base text-center sm:text-left">
+      {canCollect
+        ? "Hi, I'm fairy Tuba! Here are your coins. Do visit after every hour to get more coins, byeee!"
+        : "Hi, I'm fairy Tuba! I don't have any coins for you right now. Please come back later when I've gathered more, byeee!"}
+    </DialogDescription>
+  </div>
 
-        <DialogFooter>
-          {canCollect ? (
-            <Button onClick={handleCollect} className="bg-purple-600 hover:bg-purple-700">
-              <Coins className="w-4 h-4 mr-2" />
-              Collect 1 Coin
-            </Button>
-          ) : (
-            <Button onClick={onClose}>Come Back Later</Button>
-          )}
-        </DialogFooter>
-      </DialogContent>
+  <DialogFooter className="mt-4">
+    {canCollect ? (
+      <Button onClick={handleCollect} className="bg-purple-600 hover:bg-purple-700 w-full sm:w-auto">
+        <Coins className="w-4 h-4 mr-2" />
+        Collect 1 Coin
+      </Button>
+    ) : (
+      <Button onClick={onClose} className="w-full sm:w-auto">Come Back Later</Button>
+    )}
+  </DialogFooter>
+</DialogContent>
+
     </Dialog>
   );
 };

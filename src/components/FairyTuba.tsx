@@ -70,9 +70,9 @@ const FairyTuba: React.FC = () => {
       });
       
       // Play coin sound
-      const coinSound = new Audio('/coin.mp3');
-      coinSound.volume = 0.5;
-      coinSound.play().catch(error => console.error('Error playing sound:', error));
+      // const coinSound = new Audio('/coin.mp3');
+      // coinSound.volume = 0.5;
+      // coinSound.play().catch(error => console.error('Error playing sound:', error));
       
       setCanCollect(false);
       updateTimeLeft();

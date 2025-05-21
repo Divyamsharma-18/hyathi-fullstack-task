@@ -45,10 +45,12 @@ const AdoptionCenter: React.FC = () => {
         const pokemons = await mockApiService.getAllPokemons();
         setAvailablePokemons(pokemons);
         
+        // Only fetch user's Pokémon if they're authenticated
         if (isAuthenticated && user) {
           const userPokemons = await mockApiService.getUserPokemons();
           setAdoptedPokemons(userPokemons);
         } else {
+          // Clear adopted Pokémon list if not authenticated
           setAdoptedPokemons([]);
         }
       } catch (error) {
@@ -152,35 +154,47 @@ const AdoptionCenter: React.FC = () => {
 
   return (
     <div className="night-sky min-h-screen flex flex-col">
-      <div className="flex-grow py-8">
+      <div className="flex-grow py-4 md:py-8">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="mb-12">
-            <div className="flex justify-between items-start">
-              <div>
-                <h1 className="pokemon-font text-3xl text-blue-300 mb-2">Welcome back, {user?.username || 'Trainer'}!</h1>
-                <p className="text-white mb-8">Rescued Pokémon are waiting for your love and care. Adopt them, feed them, and help them grow stronger!</p>
+          <div className="mb-6 md:mb-12">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+              <div className="order-2 md:order-1">
+                <h1 className="pokemon-font text-xl sm:text-2xl md:text-3xl text-blue-300 mb-2">Welcome back, {user?.username || 'Trainer'}!</h1>
+                <p className="text-white text-sm md:text-base mb-4 md:mb-8">Rescued Pokémon are waiting for your love and care. Adopt them, feed them, and help them grow stronger!</p>
               </div>
               
-              {/* Repositioned Fairy Tuba component */}
-              <div className="mt-2">
+              {/* Fairy Tuba component - now always showing on the right, even on small screens */}
+              <div className="order-1 md:order-2 flex justify-end">
                 {isAuthenticated && <FairyTuba />}
               </div>
             </div>
             
             <Tabs defaultValue="available" className="w-full" onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="available" className="pokemon-font">❤️ ADOPT A POKÉMON</TabsTrigger>
-                <TabsTrigger value="adopted" className="pokemon-font">🔄 MY POKÉMON</TabsTrigger>
+                <TabsTrigger 
+                  value="available" 
+                  className="pokemon-font text-xs overflow-hidden whitespace-nowrap text-ellipsis px-1 xs:px-2 sm:text-sm"
+                >
+                  <span className="hidden max-[380px]:inline">ADOPT</span>
+                  <span className="inline max-[380px]:hidden">❤️ ADOPT A POKÉMON</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="adopted" 
+                  className="pokemon-font text-xs overflow-hidden whitespace-nowrap text-ellipsis px-1 xs:px-2 sm:text-sm"
+                >
+                  <span className="hidden max-[380px]:inline">MY POKÉMON</span>
+                  <span className="inline max-[380px]:hidden">🔄 MY POKÉMON</span>
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
           
-          <div className="flex items-start gap-6">
+          <div className="flex flex-col md:items-start gap-6">
             <div className="w-full">
               {activeTab === "available" && (
                 <>
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="pokemon-font text-2xl text-white">Available for Adoption</h2>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+                    <h2 className="pokemon-font text-lg sm:text-xl md:text-2xl text-white">Available for Adoption</h2>
                     
                     {/* Search bar */}
                     <div className="relative w-full max-w-xs">
@@ -195,7 +209,7 @@ const AdoptionCenter: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                     {filteredPokemons.length > 0 ? (
                       filteredPokemons.map(pokemon => (
                         <PokemonCard 
@@ -207,10 +221,10 @@ const AdoptionCenter: React.FC = () => {
                         />
                       ))
                     ) : (
-                      <div className="col-span-full text-center py-12">
-                        <p className="text-white text-xl mb-4">No Pokémon found matching your search</p>
+                      <div className="col-span-full text-center py-8 md:py-12">
+                        <p className="text-white text-lg md:text-xl mb-4">No Pokémon found matching your search</p>
                         <button 
-                          className="pixel-button"
+                          className="pixel-button text-sm md:text-base"
                           onClick={() => setSearchQuery("")}
                         >
                           Clear Search
@@ -223,12 +237,12 @@ const AdoptionCenter: React.FC = () => {
               
               {activeTab === "adopted" && (
                 <>
-                  <h2 className="pokemon-font text-2xl text-white mb-4">My Adopted Pokémon</h2>
+                  <h2 className="pokemon-font text-lg sm:text-xl md:text-2xl text-white mb-4">My Adopted Pokémon</h2>
                   
                   {/* Horizontal stats card */}
                   <StatsCard />
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
                     {adoptedPokemons.length > 0 ? (
                       adoptedPokemons.map(pokemon => (
                         <PokemonCard 
@@ -241,10 +255,10 @@ const AdoptionCenter: React.FC = () => {
                         />
                       ))
                     ) : (
-                      <div className="col-span-full text-center py-12">
-                        <p className="text-white text-xl mb-4">You haven't adopted any Pokémon yet</p>
+                      <div className="col-span-full text-center py-8 md:py-12">
+                        <p className="text-white text-lg md:text-xl mb-4">You haven't adopted any Pokémon yet</p>
                         <button 
-                          className="pixel-button"
+                          className="pixel-button text-sm md:text-base"
                           onClick={() => setActiveTab("available")}
                         >
                           Find a Pokémon to Adopt
