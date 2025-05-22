@@ -11,3 +11,5 @@ This isn't just about catching them all – it's about *caring* for them. 🥺�
 > 🎮 Built with React, Typescript, Node.js, and MongoDB  
 > 🔐 Login to sync your progress and adopted Pokémons  
 > 🌸 Created with love and lots of fairy dust ✨
+
+I will be updating the repo every consecutive day for finishing the left functionality and adding more fun fun features in it! 
